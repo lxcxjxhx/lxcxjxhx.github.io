@@ -1,0 +1,4 @@
+User-agent: Baiduspider
+Allow: /
+
+Sitemap: https://www.cbloghyrj365.us.kg//baidusitemap.xml
