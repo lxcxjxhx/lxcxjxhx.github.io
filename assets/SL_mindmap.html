@@ -1,0 +1,137 @@
+
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+<!--         
+<center>
+<h1></h1>
+</center> -->
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 900px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#A9A9A9", "id": "\u4fe1\u606f\u5b89\u5168\u57fa\u7840", "label": "\u4fe1\u606f\u5b89\u5168\u57fa\u7840", "shape": "box", "title": "", "url": null}, {"color": "#A9A9A9", "id": "1. \u4fe1\u606f\u5b89\u5168\u6982\u8ff0", "label": "1. \u4fe1\u606f\u5b89\u5168\u6982\u8ff0", "shape": "box", "title": "", "url": null}, {"color": "#A9A9A9", "id": "\u4fe1\u606f\u5b89\u5168\u7684\u5b9a\u4e49\u4e0e\u76ee\u6807", "label": "\u4fe1\u606f\u5b89\u5168\u7684\u5b9a\u4e49\u4e0e\u76ee\u6807", "shape": "box", "title": "", "url": null}, {"color": "#A9A9A9", "id": "\u4fe1\u606f\u5b89\u5168\u7684\u57fa\u672c\u539f\u5219", "label": "\u4fe1\u606f\u5b89\u5168\u7684\u57fa\u672c\u539f\u5219", "shape": "box", "title": "", "url": null}, {"color": "#A9A9A9", "id": "\u4fe1\u606f\u5b89\u5168\u98ce\u9669\u8bc4\u4f30", "label": "\u4fe1\u606f\u5b89\u5168\u98ce\u9669\u8bc4\u4f30", "shape": "box", "title": "", "url": null}, {"color": "#A9A9A9", "id": "2. \u5e38\u89c1\u5b89\u5168\u5a01\u80c1", "label": "2. \u5e38\u89c1\u5b89\u5168\u5a01\u80c1", "shape": "box", "title": "", "url": null}, {"color": "#A9A9A9", "id": "\u6076\u610f\u8f6f\u4ef6\uff08\u75c5\u6bd2\u3001\u8815\u866b\u3001\u6728\u9a6c\uff09", "label": "\u6076\u610f\u8f6f\u4ef6\uff08\u75c5\u6bd2\u3001\u8815\u866b\u3001\u6728\u9a6c\uff09", "shape": "box", "title": "", "url": null}, {"color": "#D62728", "id": "\u6076\u610f\u8f6f\u4ef6", "label": "\u6076\u610f\u8f6f\u4ef6", "shape": "ellipse", "title": "\u70b9\u51fb\u6253\u5f00: https://github.com/yourusername/yourrepo/tree/main/docs/\u6076\u610f\u8f6f\u4ef6", "url": "https://github.com/yourusername/yourrepo/tree/main/docs/\u6076\u610f\u8f6f\u4ef6"}, {"color": "#A9A9A9", "id": "\u7f51\u7edc\u653b\u51fb\uff08DDoS\u3001MITM\u3001\u4e2d\u95f4\u4eba\u653b\u51fb\uff09", "label": "\u7f51\u7edc\u653b\u51fb\uff08DDoS\u3001MITM\u3001\u4e2d\u95f4\u4eba\u653b\u51fb\uff09", "shape": "box", "title": "", "url": null}, {"color": "#D62728", "id": "\u7f51\u7edc\u653b\u51fb", "label": "\u7f51\u7edc\u653b\u51fb", "shape": "ellipse", "title": "\u70b9\u51fb\u6253\u5f00: https://github.com/yourusername/yourrepo/tree/main/docs/\u7f51\u7edc\u653b\u51fb", "url": "https://github.com/yourusername/yourrepo/tree/main/docs/\u7f51\u7edc\u653b\u51fb"}, {"color": "#A9A9A9", "id": "\u793e\u4f1a\u5de5\u7a0b\u5b66\u653b\u51fb", "label": "\u793e\u4f1a\u5de5\u7a0b\u5b66\u653b\u51fb", "shape": "box", "title": "", "url": null}, {"color": "#A9A9A9", "id": "\u5bc6\u7801\u5b66\u57fa\u7840", "label": "\u5bc6\u7801\u5b66\u57fa\u7840", "shape": "box", "title": "", "url": null}, {"color": "#A9A9A9", "id": "1. \u5bf9\u79f0\u52a0\u5bc6\u4e0e\u975e\u5bf9\u79f0\u52a0\u5bc6", "label": "1. \u5bf9\u79f0\u52a0\u5bc6\u4e0e\u975e\u5bf9\u79f0\u52a0\u5bc6", "shape": "box", "title": "", "url": null}, {"color": "#A9A9A9", "id": "\u5bf9\u79f0\u52a0\u5bc6\uff08DES\u3001AES\uff09", "label": "\u5bf9\u79f0\u52a0\u5bc6\uff08DES\u3001AES\uff09", "shape": "box", "title": "", "url": null}, {"color": "#D62728", "id": "\u5bf9\u79f0\u52a0\u5bc6", "label": "\u5bf9\u79f0\u52a0\u5bc6", "shape": "ellipse", "title": "\u70b9\u51fb\u6253\u5f00: https://github.com/yourusername/yourrepo/tree/main/docs/\u5bf9\u79f0\u52a0\u5bc6", "url": "https://github.com/yourusername/yourrepo/tree/main/docs/\u5bf9\u79f0\u52a0\u5bc6"}, {"color": "#A9A9A9", "id": "\u975e\u5bf9\u79f0\u52a0\u5bc6\uff08RSA\u3001ECC\uff09", "label": "\u975e\u5bf9\u79f0\u52a0\u5bc6\uff08RSA\u3001ECC\uff09", "shape": "box", "title": "", "url": null}, {"color": "#D62728", "id": "\u975e\u5bf9\u79f0\u52a0\u5bc6", "label": "\u975e\u5bf9\u79f0\u52a0\u5bc6", "shape": "ellipse", "title": "\u70b9\u51fb\u6253\u5f00: https://github.com/yourusername/yourrepo/tree/main/docs/\u975e\u5bf9\u79f0\u52a0\u5bc6", "url": "https://github.com/yourusername/yourrepo/tree/main/docs/\u975e\u5bf9\u79f0\u52a0\u5bc6"}, {"color": "#A9A9A9", "id": "2. \u54c8\u5e0c\u7b97\u6cd5\u4e0e\u6570\u5b57\u7b7e\u540d", "label": "2. \u54c8\u5e0c\u7b97\u6cd5\u4e0e\u6570\u5b57\u7b7e\u540d", "shape": "box", "title": "", "url": null}, {"color": "#A9A9A9", "id": "\u54c8\u5e0c\u7b97\u6cd5\uff08MD5\u3001SHA\uff09", "label": "\u54c8\u5e0c\u7b97\u6cd5\uff08MD5\u3001SHA\uff09", "shape": "box", "title": "", "url": null}, {"color": "#D62728", "id": "\u54c8\u5e0c\u7b97\u6cd5", "label": "\u54c8\u5e0c\u7b97\u6cd5", "shape": "ellipse", "title": "\u70b9\u51fb\u6253\u5f00: https://github.com/yourusername/yourrepo/tree/main/docs/\u54c8\u5e0c\u7b97\u6cd5", "url": "https://github.com/yourusername/yourrepo/tree/main/docs/\u54c8\u5e0c\u7b97\u6cd5"}, {"color": "#A9A9A9", "id": "\u6570\u5b57\u7b7e\u540d\u539f\u7406", "label": "\u6570\u5b57\u7b7e\u540d\u539f\u7406", "shape": "box", "title": "", "url": null}, {"color": "#D62728", "id": "\u6570\u5b57\u7b7e\u540d", "label": "\u6570\u5b57\u7b7e\u540d", "shape": "ellipse", "title": "\u70b9\u51fb\u6253\u5f00: https://github.com/yourusername/yourrepo/tree/main/docs/\u6570\u5b57\u7b7e\u540d", "url": "https://github.com/yourusername/yourrepo/tree/main/docs/\u6570\u5b57\u7b7e\u540d"}, {"color": "#A9A9A9", "id": "\u7f51\u7edc\u5b89\u5168", "label": "\u7f51\u7edc\u5b89\u5168", "shape": "box", "title": "", "url": null}, {"color": "#A9A9A9", "id": "1. \u7f51\u7edc\u5b89\u5168\u534f\u8bae", "label": "1. \u7f51\u7edc\u5b89\u5168\u534f\u8bae", "shape": "box", "title": "", "url": null}, {"color": "#A9A9A9", "id": "HTTPS \u4e0e TLS", "label": "HTTPS \u4e0e TLS", "shape": "box", "title": "", "url": null}, {"color": "#A9A9A9", "id": "VPN \u539f\u7406", "label": "VPN \u539f\u7406", "shape": "box", "title": "", "url": null}, {"color": "#A9A9A9", "id": "2. \u9632\u706b\u5899\u4e0e\u5165\u4fb5\u68c0\u6d4b", "label": "2. \u9632\u706b\u5899\u4e0e\u5165\u4fb5\u68c0\u6d4b", "shape": "box", "title": "", "url": null}, {"color": "#A9A9A9", "id": "\u9632\u706b\u5899\u539f\u7406", "label": "\u9632\u706b\u5899\u539f\u7406", "shape": "box", "title": "", "url": null}, {"color": "#D62728", "id": "\u9632\u706b\u5899", "label": "\u9632\u706b\u5899", "shape": "ellipse", "title": "\u70b9\u51fb\u6253\u5f00: https://github.com/yourusername/yourrepo/tree/main/docs/\u9632\u706b\u5899", "url": "https://github.com/yourusername/yourrepo/tree/main/docs/\u9632\u706b\u5899"}, {"color": "#A9A9A9", "id": "\u5165\u4fb5\u68c0\u6d4b\u7cfb\u7edf\uff08IDS/IPS\uff09", "label": "\u5165\u4fb5\u68c0\u6d4b\u7cfb\u7edf\uff08IDS/IPS\uff09", "shape": "box", "title": "", "url": null}, {"color": "#D62728", "id": "\u5165\u4fb5\u68c0\u6d4b", "label": "\u5165\u4fb5\u68c0\u6d4b", "shape": "ellipse", "title": "\u70b9\u51fb\u6253\u5f00: https://github.com/yourusername/yourrepo/tree/main/docs/\u5165\u4fb5\u68c0\u6d4b", "url": "https://github.com/yourusername/yourrepo/tree/main/docs/\u5165\u4fb5\u68c0\u6d4b"}, {"color": "#A9A9A9", "id": "\u64cd\u4f5c\u7cfb\u7edf\u5b89\u5168", "label": "\u64cd\u4f5c\u7cfb\u7edf\u5b89\u5168", "shape": "box", "title": "", "url": null}, {"color": "#A9A9A9", "id": "1. \u64cd\u4f5c\u7cfb\u7edf\u5b89\u5168\u673a\u5236", "label": "1. \u64cd\u4f5c\u7cfb\u7edf\u5b89\u5168\u673a\u5236", "shape": "box", "title": "", "url": null}, {"color": "#A9A9A9", "id": "\u8bbf\u95ee\u63a7\u5236\uff08ACL, RBAC\uff09", "label": "\u8bbf\u95ee\u63a7\u5236\uff08ACL, RBAC\uff09", "shape": "box", "title": "", "url": null}, {"color": "#D62728", "id": "\u8bbf\u95ee\u63a7\u5236", "label": "\u8bbf\u95ee\u63a7\u5236", "shape": "ellipse", "title": "\u70b9\u51fb\u6253\u5f00: https://github.com/yourusername/yourrepo/tree/main/docs/\u8bbf\u95ee\u63a7\u5236", "url": "https://github.com/yourusername/yourrepo/tree/main/docs/\u8bbf\u95ee\u63a7\u5236"}, {"color": "#A9A9A9", "id": "\u7528\u6237\u6743\u9650\u7ba1\u7406", "label": "\u7528\u6237\u6743\u9650\u7ba1\u7406", "shape": "box", "title": "", "url": null}, {"color": "#A9A9A9", "id": "2. Linux \u4e0e Windows \u5b89\u5168", "label": "2. Linux \u4e0e Windows \u5b89\u5168", "shape": "box", "title": "", "url": null}, {"color": "#A9A9A9", "id": "Linux \u5b89\u5168\u52a0\u56fa", "label": "Linux \u5b89\u5168\u52a0\u56fa", "shape": "box", "title": "", "url": null}, {"color": "#D62728", "id": "Linux \u5b89\u5168", "label": "Linux \u5b89\u5168", "shape": "ellipse", "title": "\u70b9\u51fb\u6253\u5f00: https://github.com/yourusername/yourrepo/tree/main/docs/Linux\u5b89\u5168", "url": "https://github.com/yourusername/yourrepo/tree/main/docs/Linux\u5b89\u5168"}, {"color": "#A9A9A9", "id": "Windows \u5b89\u5168\u7b56\u7565", "label": "Windows \u5b89\u5168\u7b56\u7565", "shape": "box", "title": "", "url": null}, {"color": "#D62728", "id": "Windows \u5b89\u5168", "label": "Windows \u5b89\u5168", "shape": "ellipse", "title": "\u70b9\u51fb\u6253\u5f00: https://github.com/yourusername/yourrepo/tree/main/docs/Windows\u5b89\u5168", "url": "https://github.com/yourusername/yourrepo/tree/main/docs/Windows\u5b89\u5168"}, {"color": "#A9A9A9", "id": "\u5e94\u7528\u5b89\u5168", "label": "\u5e94\u7528\u5b89\u5168", "shape": "box", "title": "", "url": null}, {"color": "#A9A9A9", "id": "1. Web \u5b89\u5168", "label": "1. Web \u5b89\u5168", "shape": "box", "title": "", "url": null}, {"color": "#A9A9A9", "id": "SQL \u6ce8\u5165", "label": "SQL \u6ce8\u5165", "shape": "box", "title": "", "url": null}, {"color": "#A9A9A9", "id": "XSS\uff08\u8de8\u7ad9\u811a\u672c\u653b\u51fb\uff09", "label": "XSS\uff08\u8de8\u7ad9\u811a\u672c\u653b\u51fb\uff09", "shape": "box", "title": "", "url": null}, {"color": "#D62728", "id": "XSS", "label": "XSS", "shape": "ellipse", "title": "\u70b9\u51fb\u6253\u5f00: https://github.com/yourusername/yourrepo/tree/main/docs/XSS", "url": "https://github.com/yourusername/yourrepo/tree/main/docs/XSS"}, {"color": "#A9A9A9", "id": "CSRF\uff08\u8de8\u7ad9\u8bf7\u6c42\u4f2a\u9020\uff09", "label": "CSRF\uff08\u8de8\u7ad9\u8bf7\u6c42\u4f2a\u9020\uff09", "shape": "box", "title": "", "url": null}, {"color": "#D62728", "id": "CSRF", "label": "CSRF", "shape": "ellipse", "title": "\u70b9\u51fb\u6253\u5f00: https://github.com/yourusername/yourrepo/tree/main/docs/CSRF", "url": "https://github.com/yourusername/yourrepo/tree/main/docs/CSRF"}, {"color": "#A9A9A9", "id": "2. \u5b89\u5168\u5f00\u53d1", "label": "2. \u5b89\u5168\u5f00\u53d1", "shape": "box", "title": "", "url": null}, {"color": "#A9A9A9", "id": "\u5b89\u5168\u7f16\u7801\u89c4\u8303", "label": "\u5b89\u5168\u7f16\u7801\u89c4\u8303", "shape": "box", "title": "", "url": null}, {"color": "#D62728", "id": "\u5b89\u5168\u7f16\u7801", "label": "\u5b89\u5168\u7f16\u7801", "shape": "ellipse", "title": "\u70b9\u51fb\u6253\u5f00: https://github.com/yourusername/yourrepo/tree/main/docs/\u5b89\u5168\u7f16\u7801", "url": "https://github.com/yourusername/yourrepo/tree/main/docs/\u5b89\u5168\u7f16\u7801"}, {"color": "#A9A9A9", "id": "\u4ee3\u7801\u5ba1\u8ba1\u4e0e\u6f0f\u6d1e\u68c0\u6d4b", "label": "\u4ee3\u7801\u5ba1\u8ba1\u4e0e\u6f0f\u6d1e\u68c0\u6d4b", "shape": "box", "title": "", "url": null}, {"color": "#D62728", "id": "\u4ee3\u7801\u5ba1\u8ba1", "label": "\u4ee3\u7801\u5ba1\u8ba1", "shape": "ellipse", "title": "\u70b9\u51fb\u6253\u5f00: https://github.com/yourusername/yourrepo/tree/main/docs/\u4ee3\u7801\u5ba1\u8ba1", "url": "https://github.com/yourusername/yourrepo/tree/main/docs/\u4ee3\u7801\u5ba1\u8ba1"}]);
+                  edges = new vis.DataSet([{"color": "#A9A9A9", "from": "\u4fe1\u606f\u5b89\u5168\u57fa\u7840", "to": "1. \u4fe1\u606f\u5b89\u5168\u6982\u8ff0"}, {"color": "#A9A9A9", "from": "1. \u4fe1\u606f\u5b89\u5168\u6982\u8ff0", "to": "\u4fe1\u606f\u5b89\u5168\u7684\u5b9a\u4e49\u4e0e\u76ee\u6807"}, {"color": "#D62728", "from": "\u4fe1\u606f\u5b89\u5168\u7684\u5b9a\u4e49\u4e0e\u76ee\u6807", "to": "\u4fe1\u606f\u5b89\u5168\u7684\u5b9a\u4e49\u4e0e\u76ee\u6807"}, {"color": "#A9A9A9", "from": "1. \u4fe1\u606f\u5b89\u5168\u6982\u8ff0", "to": "\u4fe1\u606f\u5b89\u5168\u7684\u57fa\u672c\u539f\u5219"}, {"color": "#D62728", "from": "\u4fe1\u606f\u5b89\u5168\u7684\u57fa\u672c\u539f\u5219", "to": "\u4fe1\u606f\u5b89\u5168\u7684\u57fa\u672c\u539f\u5219"}, {"color": "#A9A9A9", "from": "1. \u4fe1\u606f\u5b89\u5168\u6982\u8ff0", "to": "\u4fe1\u606f\u5b89\u5168\u98ce\u9669\u8bc4\u4f30"}, {"color": "#D62728", "from": "\u4fe1\u606f\u5b89\u5168\u98ce\u9669\u8bc4\u4f30", "to": "\u4fe1\u606f\u5b89\u5168\u98ce\u9669\u8bc4\u4f30"}, {"color": "#A9A9A9", "from": "\u4fe1\u606f\u5b89\u5168\u57fa\u7840", "to": "2. \u5e38\u89c1\u5b89\u5168\u5a01\u80c1"}, {"color": "#A9A9A9", "from": "2. \u5e38\u89c1\u5b89\u5168\u5a01\u80c1", "to": "\u6076\u610f\u8f6f\u4ef6\uff08\u75c5\u6bd2\u3001\u8815\u866b\u3001\u6728\u9a6c\uff09"}, {"color": "#D62728", "from": "\u6076\u610f\u8f6f\u4ef6\uff08\u75c5\u6bd2\u3001\u8815\u866b\u3001\u6728\u9a6c\uff09", "to": "\u6076\u610f\u8f6f\u4ef6"}, {"color": "#A9A9A9", "from": "2. \u5e38\u89c1\u5b89\u5168\u5a01\u80c1", "to": "\u7f51\u7edc\u653b\u51fb\uff08DDoS\u3001MITM\u3001\u4e2d\u95f4\u4eba\u653b\u51fb\uff09"}, {"color": "#D62728", "from": "\u7f51\u7edc\u653b\u51fb\uff08DDoS\u3001MITM\u3001\u4e2d\u95f4\u4eba\u653b\u51fb\uff09", "to": "\u7f51\u7edc\u653b\u51fb"}, {"color": "#A9A9A9", "from": "2. \u5e38\u89c1\u5b89\u5168\u5a01\u80c1", "to": "\u793e\u4f1a\u5de5\u7a0b\u5b66\u653b\u51fb"}, {"color": "#D62728", "from": "\u793e\u4f1a\u5de5\u7a0b\u5b66\u653b\u51fb", "to": "\u793e\u4f1a\u5de5\u7a0b\u5b66\u653b\u51fb"}, {"color": "#A9A9A9", "from": "\u5bc6\u7801\u5b66\u57fa\u7840", "to": "1. \u5bf9\u79f0\u52a0\u5bc6\u4e0e\u975e\u5bf9\u79f0\u52a0\u5bc6"}, {"color": "#A9A9A9", "from": "1. \u5bf9\u79f0\u52a0\u5bc6\u4e0e\u975e\u5bf9\u79f0\u52a0\u5bc6", "to": "\u5bf9\u79f0\u52a0\u5bc6\uff08DES\u3001AES\uff09"}, {"color": "#D62728", "from": "\u5bf9\u79f0\u52a0\u5bc6\uff08DES\u3001AES\uff09", "to": "\u5bf9\u79f0\u52a0\u5bc6"}, {"color": "#A9A9A9", "from": "1. \u5bf9\u79f0\u52a0\u5bc6\u4e0e\u975e\u5bf9\u79f0\u52a0\u5bc6", "to": "\u975e\u5bf9\u79f0\u52a0\u5bc6\uff08RSA\u3001ECC\uff09"}, {"color": "#D62728", "from": "\u975e\u5bf9\u79f0\u52a0\u5bc6\uff08RSA\u3001ECC\uff09", "to": "\u975e\u5bf9\u79f0\u52a0\u5bc6"}, {"color": "#A9A9A9", "from": "\u5bc6\u7801\u5b66\u57fa\u7840", "to": "2. \u54c8\u5e0c\u7b97\u6cd5\u4e0e\u6570\u5b57\u7b7e\u540d"}, {"color": "#A9A9A9", "from": "2. \u54c8\u5e0c\u7b97\u6cd5\u4e0e\u6570\u5b57\u7b7e\u540d", "to": "\u54c8\u5e0c\u7b97\u6cd5\uff08MD5\u3001SHA\uff09"}, {"color": "#D62728", "from": "\u54c8\u5e0c\u7b97\u6cd5\uff08MD5\u3001SHA\uff09", "to": "\u54c8\u5e0c\u7b97\u6cd5"}, {"color": "#A9A9A9", "from": "2. \u54c8\u5e0c\u7b97\u6cd5\u4e0e\u6570\u5b57\u7b7e\u540d", "to": "\u6570\u5b57\u7b7e\u540d\u539f\u7406"}, {"color": "#D62728", "from": "\u6570\u5b57\u7b7e\u540d\u539f\u7406", "to": "\u6570\u5b57\u7b7e\u540d"}, {"color": "#A9A9A9", "from": "\u7f51\u7edc\u5b89\u5168", "to": "1. \u7f51\u7edc\u5b89\u5168\u534f\u8bae"}, {"color": "#A9A9A9", "from": "1. \u7f51\u7edc\u5b89\u5168\u534f\u8bae", "to": "HTTPS \u4e0e TLS"}, {"color": "#D62728", "from": "HTTPS \u4e0e TLS", "to": "HTTPS \u4e0e TLS"}, {"color": "#A9A9A9", "from": "1. \u7f51\u7edc\u5b89\u5168\u534f\u8bae", "to": "VPN \u539f\u7406"}, {"color": "#D62728", "from": "VPN \u539f\u7406", "to": "VPN \u539f\u7406"}, {"color": "#A9A9A9", "from": "\u7f51\u7edc\u5b89\u5168", "to": "2. \u9632\u706b\u5899\u4e0e\u5165\u4fb5\u68c0\u6d4b"}, {"color": "#A9A9A9", "from": "2. \u9632\u706b\u5899\u4e0e\u5165\u4fb5\u68c0\u6d4b", "to": "\u9632\u706b\u5899\u539f\u7406"}, {"color": "#D62728", "from": "\u9632\u706b\u5899\u539f\u7406", "to": "\u9632\u706b\u5899"}, {"color": "#A9A9A9", "from": "2. \u9632\u706b\u5899\u4e0e\u5165\u4fb5\u68c0\u6d4b", "to": "\u5165\u4fb5\u68c0\u6d4b\u7cfb\u7edf\uff08IDS/IPS\uff09"}, {"color": "#D62728", "from": "\u5165\u4fb5\u68c0\u6d4b\u7cfb\u7edf\uff08IDS/IPS\uff09", "to": "\u5165\u4fb5\u68c0\u6d4b"}, {"color": "#A9A9A9", "from": "\u64cd\u4f5c\u7cfb\u7edf\u5b89\u5168", "to": "1. \u64cd\u4f5c\u7cfb\u7edf\u5b89\u5168\u673a\u5236"}, {"color": "#A9A9A9", "from": "1. \u64cd\u4f5c\u7cfb\u7edf\u5b89\u5168\u673a\u5236", "to": "\u8bbf\u95ee\u63a7\u5236\uff08ACL, RBAC\uff09"}, {"color": "#D62728", "from": "\u8bbf\u95ee\u63a7\u5236\uff08ACL, RBAC\uff09", "to": "\u8bbf\u95ee\u63a7\u5236"}, {"color": "#A9A9A9", "from": "1. \u64cd\u4f5c\u7cfb\u7edf\u5b89\u5168\u673a\u5236", "to": "\u7528\u6237\u6743\u9650\u7ba1\u7406"}, {"color": "#D62728", "from": "\u7528\u6237\u6743\u9650\u7ba1\u7406", "to": "\u7528\u6237\u6743\u9650\u7ba1\u7406"}, {"color": "#A9A9A9", "from": "\u64cd\u4f5c\u7cfb\u7edf\u5b89\u5168", "to": "2. Linux \u4e0e Windows \u5b89\u5168"}, {"color": "#A9A9A9", "from": "2. Linux \u4e0e Windows \u5b89\u5168", "to": "Linux \u5b89\u5168\u52a0\u56fa"}, {"color": "#D62728", "from": "Linux \u5b89\u5168\u52a0\u56fa", "to": "Linux \u5b89\u5168"}, {"color": "#A9A9A9", "from": "2. Linux \u4e0e Windows \u5b89\u5168", "to": "Windows \u5b89\u5168\u7b56\u7565"}, {"color": "#D62728", "from": "Windows \u5b89\u5168\u7b56\u7565", "to": "Windows \u5b89\u5168"}, {"color": "#A9A9A9", "from": "\u5e94\u7528\u5b89\u5168", "to": "1. Web \u5b89\u5168"}, {"color": "#A9A9A9", "from": "1. Web \u5b89\u5168", "to": "SQL \u6ce8\u5165"}, {"color": "#D62728", "from": "SQL \u6ce8\u5165", "to": "SQL \u6ce8\u5165"}, {"color": "#A9A9A9", "from": "1. Web \u5b89\u5168", "to": "XSS\uff08\u8de8\u7ad9\u811a\u672c\u653b\u51fb\uff09"}, {"color": "#D62728", "from": "XSS\uff08\u8de8\u7ad9\u811a\u672c\u653b\u51fb\uff09", "to": "XSS"}, {"color": "#A9A9A9", "from": "1. Web \u5b89\u5168", "to": "CSRF\uff08\u8de8\u7ad9\u8bf7\u6c42\u4f2a\u9020\uff09"}, {"color": "#D62728", "from": "CSRF\uff08\u8de8\u7ad9\u8bf7\u6c42\u4f2a\u9020\uff09", "to": "CSRF"}, {"color": "#A9A9A9", "from": "\u5e94\u7528\u5b89\u5168", "to": "2. \u5b89\u5168\u5f00\u53d1"}, {"color": "#A9A9A9", "from": "2. \u5b89\u5168\u5f00\u53d1", "to": "\u5b89\u5168\u7f16\u7801\u89c4\u8303"}, {"color": "#D62728", "from": "\u5b89\u5168\u7f16\u7801\u89c4\u8303", "to": "\u5b89\u5168\u7f16\u7801"}, {"color": "#A9A9A9", "from": "2. \u5b89\u5168\u5f00\u53d1", "to": "\u4ee3\u7801\u5ba1\u8ba1\u4e0e\u6f0f\u6d1e\u68c0\u6d4b"}, {"color": "#D62728", "from": "\u4ee3\u7801\u5ba1\u8ba1\u4e0e\u6f0f\u6d1e\u68c0\u6d4b", "to": "\u4ee3\u7801\u5ba1\u8ba1"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"physics": {"enabled": true, "barnesHut": {"gravitationalConstant": -5000, "centralGravity": 0.2, "springLength": 200, "springConstant": 0.01, "damping": 0.09}, "minVelocity": 0.75}};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+        network.on("click", function(params) {
+            if (params.nodes.length > 0) {
+                var nodeId = params.nodes[0];
+                var nodeData = nodes.get(nodeId);
+                if (nodeData && nodeData.url) {
+                    window.open(nodeData.url, "_blank");
+                }
+            }
+        });
+    });
+    </script>
+    
