@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>硬件安全插件下载</title>
+    <script>
+        function downloadPlugin() {
+            var pluginSelect = document.getElementById("pluginSelect");
+            var selectedValue = pluginSelect.value;
+            if (selectedValue) {
+                window.location.href = selectedValue;
+            } else {
+                alert("请选择一个插件下载！");
+            }
+        }
+    </script>
+</head>
+<body>
+    <h2>选择要下载的硬件安全插件</h2>
+    <select id="pluginSelect">
+        <option value="">-- 请选择插件 --</option>
+        <option value="https://github.com/lxcxjxhx/HOS/tree/main/C_S/BP_HW.c">BP</option>
+        <option value="https://github.com/lxcxjxhx/HOS/tree/main/C_S/SG_HW.c">SG</option>
+        <option value="https://github.com/lxcxjxhx/HOS/tree/main/C_S/USB_HW.c">USB</option>
+    </select>
+    <button onclick="downloadPlugin()">下载</button>
+    
+</body>
+</html>
