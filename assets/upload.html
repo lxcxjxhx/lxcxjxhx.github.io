@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文件上传</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .container { max-width: 400px; margin: 50px auto; }
+        input, button { margin: 10px; padding: 10px; width: 100%; }
+        #uploadForm { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>文件上传</h2>
+        <div id="passwordForm">
+            <input type="password" id="password" placeholder="输入密码">
+            <button onclick="checkPassword()">提交</button>
+        </div>
+        <div id="uploadForm">
+            <input type="file" id="fileInput">
+            <button onclick="uploadFile()">上传</button>
+        </div>
+    </div>
+
+    <script>
+        const correctPassword = "HOSROOT";
+
+        function checkPassword() {
+            const inputPassword = document.getElementById("password").value;
+            if (inputPassword === correctPassword) {
+                document.getElementById("passwordForm").style.display = "none";
+                document.getElementById("uploadForm").style.display = "block";
+            } else {
+                alert("密码错误！");
+            }
+        }
+
+        function uploadFile() {
+            const fileInput = document.getElementById("fileInput");
+            if (fileInput.files.length === 0) {
+                alert("请选择文件！");
+                return;
+            }
+            
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append("file", file);
+            
+            fetch("/upload", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            })
+            .catch(error => {
+                alert("上传失败");
+            });
+        }
+    </script>
+</body>
+</html>
