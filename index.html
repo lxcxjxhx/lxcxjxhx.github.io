@@ -170,7 +170,7 @@
         </li>
       
     </ul>
-  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">Article Count :</div><div class="item-count">6</div></div><div class="webinfo-item"><div class="item-name">Unique Visitors :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">Page Views :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">Last Update :</div><div class="item-count" id="last-push-date" data-lastPushDate="2025-03-10T01:41:56.437Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><button id="ai-button" style="position: fixed; bottom: 20px; right: 50px; padding: 10px 16px; background-color: rgb(110, 110, 110); color: white; border: none; border-radius: 5px; cursor: pointer;">AI 助手</button><div id="ai-float-container" style="display: none; position: fixed; bottom: 20px; right: 20px; width: 300px; height: 250px; background: white; box-shadow: 0 0 10px rgba(0,0,0,0.3); z-index: 1000; border-radius: 10px; overflow: hidden;"><div id="ai-header" style="position: absolute; top: 0; left: 0; width: 100%; height: 30px; background: #ddd; cursor: move; border-bottom: 1px solid #ccc;"><button id="close-ai" style="position: absolute; top: 5px; right: 5px; background: #ff4444; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 5px;">关闭</button><button id="enlarge-ai" style="position: absolute; top: 5px; right: 70px; background: #4CAF50; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 5px;">放大</button></div><div id="iframe-container" style="width: 100%; height: calc(100% - 30px); margin-top: 30px; overflow: hidden;"><iframe id="gradio-iframe" src="https://lxcxjxhx-blog-aides.hf.space" style="width: 100%; height: 100%; border: none; margin: 0; padding: 0;"></iframe></div></div><style>#ai-button:hover {
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">Article Count :</div><div class="item-count">6</div></div><div class="webinfo-item"><div class="item-name">Unique Visitors :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">Page Views :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">Last Update :</div><div class="item-count" id="last-push-date" data-lastPushDate="2025-03-10T01:50:25.506Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><button id="ai-button" style="position: fixed; bottom: 20px; right: 50px; padding: 10px 16px; background-color: rgb(110, 110, 110); color: white; border: none; border-radius: 5px; cursor: pointer;">AI 助手</button><div id="ai-float-container" style="display: none; position: fixed; bottom: 20px; right: 20px; width: 300px; height: 250px; background: white; box-shadow: 0 0 10px rgba(0,0,0,0.3); z-index: 1000; border-radius: 10px; overflow: hidden;"><div id="ai-header" style="position: absolute; top: 0; left: 0; width: 100%; height: 30px; background: #ddd; cursor: move; border-bottom: 1px solid #ccc;"><button id="close-ai" style="position: absolute; top: 5px; right: 5px; background: #ff4444; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 5px;">关闭</button><button id="enlarge-ai" style="position: absolute; top: 5px; right: 70px; background: #4CAF50; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 5px;">放大</button></div><div id="iframe-container" style="width: 100%; height: calc(100% - 30px); margin-top: 30px; overflow: hidden;"><iframe id="gradio-iframe" src="https://lxcxjxhx-blog-aides.hf.space" style="width: 600px; height: 500px; border: none; margin: 0; padding: 0; transform: scale(0.5); transform-origin: top left;"></iframe></div></div><style>#ai-button:hover {
   background-color: rgb(90, 90, 90);
 }
 #close-ai:hover {
@@ -181,6 +181,9 @@
 }
 #ai-float-container {
   transition: width 0.2s ease, height 0.2s ease;
+}
+#gradio-iframe {
+  transition: transform 0.2s ease;
 }
 </style><script>// 获取元素
 var aiButton = document.getElementById('ai-button');
@@ -205,10 +208,12 @@ enlargeButton.addEventListener('click', function() {
   if (floatContainer.style.width === '600px') {
     floatContainer.style.width = '300px';
     floatContainer.style.height = '250px';
+    iframe.style.transform = 'scale(0.5)';
     enlargeButton.textContent = '放大';
   } else {
     floatContainer.style.width = '600px';
     floatContainer.style.height = '500px';
+    iframe.style.transform = 'scale(1)';
     enlargeButton.textContent = '缩小';
   }
 });
