@@ -1,0 +1,262 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Outfit", -apple-system, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Consolas", monospace;
+}
+
+:root {
+  /* Background */
+  --bg-primary: #1E1F1D;
+  --bg-card: #2C2D2F;
+  --bg-deep: #1A1A1C;
+  --bg-code: #141514;
+
+  /* Text */
+  --text-primary: #f5f5f5;
+  --text-muted: #b0b0a8;
+
+  /* Border */
+  --border-subtle: #3B3D38;
+
+  /* Hyacinth Palette */
+  --hyacinth-deep: #2D1A36;
+  --hyacinth-light: #8C6E9F;
+  --hyacinth-lavender: #B49BC4;
+  --hyacinth-crimson: #862C3B;
+  --hyacinth-red: #B33F4E;
+  --hyacinth-green: #6CCB4C;
+
+  /* Font */
+  --font-body: "Outfit", -apple-system, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Consolas", monospace;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Selection */
+::selection {
+  background: rgba(140, 110, 159, 0.4);
+  color: var(--text-primary);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-deep);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(140, 110, 159, 0.4);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(140, 110, 159, 0.6);
+}
+
+/* Gradient Text Hero */
+.gradient-text-hero {
+  background: linear-gradient(
+    90deg,
+    #B49BC4 0%,
+    #8C6E9F 20%,
+    #862C3B 50%,
+    #6CCB4C 80%,
+    #B49BC4 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-shift 10s ease infinite;
+}
+
+/* Gradient Text Accent */
+.gradient-text-accent {
+  background: linear-gradient(135deg, #B49BC4 0%, #8C6E9F 50%, #862C3B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Card Solid */
+.card-solid {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+.card-solid::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(140, 110, 159, 0.03),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+.card-solid:hover::before {
+  left: 100%;
+}
+.card-solid:hover {
+  border-color: var(--hyacinth-light);
+  box-shadow:
+    0 8px 30px -10px rgba(140, 110, 159, 0.15),
+    0 0 0 1px rgba(140, 110, 159, 0.1);
+  transform: translateY(-3px);
+}
+
+/* Glow Button */
+.glow-btn {
+  background: linear-gradient(
+    135deg,
+    #862C3B 0%,
+    #B33F4E 50%,
+    #6CCB4C 100%
+  );
+  background-size: 200% 200%;
+  animation: gradient-shift 6s ease infinite;
+  color: white;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.glow-btn:hover {
+  box-shadow:
+    0 8px 30px -5px rgba(134, 44, 59, 0.5),
+    0 0 20px rgba(108, 203, 76, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Section Divider */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(140, 110, 159, 0.3) 25%,
+    rgba(180, 155, 196, 0.3) 50%,
+    rgba(108, 203, 76, 0.3) 75%,
+    transparent 100%
+  );
+}
+
+/* Terminal Window */
+.terminal-window {
+  background: var(--bg-code);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.terminal-window::before {
+  content: "";
+  display: block;
+  height: 32px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-subtle);
+  background-image:
+    radial-gradient(circle at 14px 50%, #B33F4E 4px, transparent 5px),
+    radial-gradient(circle at 32px 50%, #B49BC4 4px, transparent 5px),
+    radial-gradient(circle at 50px 50%, #6CCB4C 4px, transparent 5px);
+  background-repeat: no-repeat;
+}
+
+/* Floating Widget */
+.floating-widget {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #862C3B, #B33F4E, #6CCB4C);
+  background-size: 200% 200%;
+  animation: gradient-shift 6s ease infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow:
+    0 4px 15px rgba(134, 44, 59, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  z-index: 50;
+}
+.floating-widget:hover {
+  transform: scale(1.15) rotate(10deg);
+  box-shadow:
+    0 6px 25px rgba(134, 44, 59, 0.4),
+    0 0 30px rgba(108, 203, 76, 0.15);
+}
+
+/* Hyacinth Petal */
+.hyacinth-petal {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(180, 155, 196, 0.15), transparent 60%),
+    radial-gradient(circle at 70% 70%, rgba(140, 110, 159, 0.1), transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(134, 44, 59, 0.08), transparent 70%);
+  filter: blur(1px);
+}
+
+/* Keyframes */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(140, 110, 159, 0.2); }
+  50% { box-shadow: 0 0 40px rgba(140, 110, 159, 0.4); }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes ping-slow {
+  0% { transform: scale(1); opacity: 0.6; }
+  75%, 100% { transform: scale(2); opacity: 0; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
