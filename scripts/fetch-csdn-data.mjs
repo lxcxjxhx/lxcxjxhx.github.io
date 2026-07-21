@@ -1,6 +1,7 @@
 /**
  * Build-time CSDN blog data fetcher
  * Sources from RSS feed: https://blog.csdn.net/lxcxjxhx/rss/list
+ * Attempts to auto-detect total article count from the profile page
  */
 
 import { writeFileSync } from "fs";
@@ -11,6 +12,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUTPUT = join(__dirname, "../src/data/csdn-data.ts");
 
 const RSS_URL = "https://blog.csdn.net/lxcxjxhx/rss/list";
+const PROFILE_URL = "https://blog.csdn.net/lxcxjxhx/";
 
 const FALLBACK_ARTICLES = [
   {
@@ -31,10 +33,10 @@ const FALLBACK_ARTICLES = [
   },
   {
     id: "162044312",
-    title: "CSDN 技术博客",
-    summary: "安全风信子的技术博客，专注 AI 与信息安全融合领域",
+    title: "RAG-Anything：多模态 RAG 终极形态，让 AI 真正理解你的所有文档",
+    summary: "HKUDS 团队重磅项目 RAG-Anything，解决一切文档的知识库问题——文本、图片、表格、公式、图表等非结构化多模态内容",
     url: "https://blog.csdn.net/lxcxjxhx/article/details/162044312",
-    publishedAt: "2026-07-01",
+    publishedAt: "2026-06-16",
     readCount: 0,
   },
 ];
@@ -56,23 +58,41 @@ function formatDate(rssDate) {
   }
 }
 
-async function fetchRSS() {
+async function fetchText(url, label) {
   try {
-    const res = await fetch(RSS_URL, {
+    const res = await fetch(url, {
       headers: {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-        Accept: "application/rss+xml,application/xml,text/xml,*/*;q=0.9",
+        Accept: "text/html,application/xhtml+xml,application/xml,*/*;q=0.9",
       },
     });
     if (!res.ok) {
-      console.warn(`CSDN RSS returned ${res.status}, using fallback.`);
+      console.warn(`${label} returned ${res.status}`);
       return null;
     }
     return await res.text();
   } catch (err) {
-    console.warn("CSDN RSS fetch failed:", err.message);
+    console.warn(`${label} fetch failed:`, err.message);
     return null;
   }
+}
+
+function extractArticleCount(html) {
+  if (!html || html.length < 5000) return null;
+
+  // Try "原创 1,471" pattern
+  const m1 = html.match(/原创\s*([\d,]+)/);
+  if (m1) return parseInt(m1[1].replace(/,/g, ""), 10);
+
+  // Try "article-count" class or data attribute
+  const m2 = html.match(/article-count["']?\s*[:=]\s*["']?(\d+)/);
+  if (m2) return parseInt(m2[1], 10);
+
+  // Try generic count near "文章" keyword
+  const m3 = html.match(/(\d[\d,]*)\s*篇文章/);
+  if (m3) return parseInt(m3[1].replace(/,/g, ""), 10);
+
+  return null;
 }
 
 function parseRSS(xml) {
@@ -105,8 +125,19 @@ function parseRSS(xml) {
 }
 
 async function main() {
-  const xml = await fetchRSS();
-  const articles = xml ? parseRSS(xml) : [];
+  // Fetch RSS feed
+  const rssXml = await fetchText(RSS_URL, "CSDN RSS");
+  const articles = rssXml ? parseRSS(rssXml) : [];
+
+  // Attempt to fetch profile page for article count
+  const profileHtml = await fetchText(PROFILE_URL, "CSDN Profile");
+  let totalArticles = extractArticleCount(profileHtml);
+
+  if (totalArticles) {
+    console.log(`Detected article count: ${totalArticles}`);
+  } else {
+    console.log("Could not auto-detect article count, will use fallback");
+  }
 
   const finalArticles = articles.length > 0 ? articles : FALLBACK_ARTICLES;
 
@@ -140,13 +171,13 @@ async function main() {
   lines.push(`];`);
   lines.push("");
   lines.push(`export const csdnStats = {`);
-  lines.push(`  totalArticles: 1467,`);
+  lines.push(`  totalArticles: ${totalArticles || "null"},`);
   lines.push(`  columns: 12,`);
   lines.push(`};`);
   lines.push("");
 
   writeFileSync(OUTPUT, lines.join("\n"), "utf-8");
-  console.log(`CSDN data written: ${finalArticles.length} articles`);
+  console.log(`CSDN data written: ${finalArticles.length} articles, totalArticles=${totalArticles || "auto-detect failed"}`);
 }
 
 main();

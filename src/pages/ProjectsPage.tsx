@@ -44,6 +44,15 @@ export default function ProjectsPage() {
           align="left"
         />
 
+        {/* 页面装饰插图 */}
+        <div className="mb-10 overflow-hidden rounded-xl border border-[var(--border-subtle)]">
+          <img
+            src="/illustrations/projects-header.jpg"
+            alt="开源项目"
+            className="w-full h-48 md:h-64 object-cover opacity-80"
+          />
+        </div>
+
         <div className="flex flex-wrap justify-center gap-8 mb-12">
           <div className="text-center">
             <div className="text-3xl font-bold text-[var(--text-primary)]">
@@ -105,7 +114,7 @@ export default function ProjectsPage() {
         {/* 外部平台链接 */}
         <div className="flex flex-wrap gap-3 mb-10">
           <a
-            href="https://pypi.org/user/lxcxjxhx/"
+            href="https://pypi.org/user/security_hyacinth/"
             target="_blank"
             rel="noopener noreferrer"
             className="px-4 py-2 rounded-full border border-[var(--border-subtle)] text-sm text-[var(--text-muted)] hover:border-[var(--hyacinth-light)] hover:text-[var(--hyacinth-lavender)] transition-all no-underline"

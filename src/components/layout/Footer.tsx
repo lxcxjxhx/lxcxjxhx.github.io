@@ -32,7 +32,7 @@ export default function Footer() {
             CSDN
           </a>
           <a
-            href="https://pypi.org/user/lxcxjxhx/"
+            href="https://pypi.org/user/security_hyacinth/"
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm text-[var(--text-muted)] hover:text-[var(--hyacinth-lavender)] transition-colors"

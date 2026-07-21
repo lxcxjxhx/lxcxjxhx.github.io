@@ -13,9 +13,18 @@ export default function ResearchPage() {
       <Container size="lg">
         <SectionTitle
           title="学术与研究"
-          subtitle="研究方向、技术专栏与竞赛认证"
+          subtitle="研究方向与技术专栏"
           align="left"
         />
+
+        {/* 页面装饰插图 */}
+        <div className="mb-10 overflow-hidden rounded-xl border border-[var(--border-subtle)]">
+          <img
+            src="/illustrations/research-header.jpg"
+            alt="学术与研究"
+            className="w-full h-48 md:h-64 object-cover opacity-80"
+          />
+        </div>
 
         {/* 研究方向 */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
@@ -56,27 +65,23 @@ export default function ResearchPage() {
           </div>
         </div>
 
-        {/* 竞赛与认证 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+        {/* 补充信息：竞赛与认证（移到页面底部） */}
+        <div className="section-divider mb-8" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
           <div>
-            <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-4">
+            <h3 className="text-base font-semibold text-[var(--text-muted)] mb-3">
               竞赛奖项
             </h3>
-            <div className="space-y-3">
+            <div className="space-y-2">
               {researchAchievements.map((ach) => (
                 <div
                   key={ach.title}
-                  className="card-solid p-4 flex items-center justify-between"
+                  className="flex items-center justify-between text-sm"
                 >
-                  <div className="flex items-center gap-3">
-                    <span className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--hyacinth-crimson)] to-[var(--hyacinth-red)] flex items-center justify-center text-white text-xs font-bold">
-                      {ach.title.charAt(0)}
-                    </span>
-                    <span className="text-sm text-[var(--text-primary)]">
-                      {ach.title}
-                    </span>
-                  </div>
-                  <span className="text-xs px-2 py-1 rounded-full bg-[var(--bg-deep)] text-[var(--hyacinth-lavender)] border border-[var(--border-subtle)]">
+                  <span className="text-[var(--text-primary)]">
+                    {ach.title}
+                  </span>
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--bg-deep)] text-[var(--hyacinth-lavender)] border border-[var(--border-subtle)]">
                     {ach.level}
                   </span>
                 </div>
@@ -85,14 +90,14 @@ export default function ResearchPage() {
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-4">
+            <h3 className="text-base font-semibold text-[var(--text-muted)] mb-3">
               专业认证
             </h3>
             <div className="flex flex-wrap gap-2">
               {certifications.map((cert) => (
                 <span
                   key={cert}
-                  className="text-sm px-3 py-1.5 rounded-full bg-[var(--bg-deep)] text-[var(--text-muted)] border border-[var(--border-subtle)]"
+                  className="text-xs px-2.5 py-1 rounded-full bg-[var(--bg-deep)] text-[var(--text-muted)] border border-[var(--border-subtle)]"
                 >
                   {cert}
                 </span>
@@ -101,14 +106,19 @@ export default function ResearchPage() {
           </div>
         </div>
 
-        {/* 论文发表 */}
-        <div className="card-solid p-8 text-center">
-          <div className="text-4xl mb-3">📝</div>
-          <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-2">
-            论文发表
-          </h3>
-          <p className="text-sm text-[var(--text-muted)] max-w-md mx-auto">
-            目前尚未发表学术论文，正在围绕上述方向积累研究。关注 CSDN 博客获取最新研究进展与写作分享。
+        {/* 论文状态 */}
+        <div className="card-solid p-6 text-center">
+          <p className="text-sm text-[var(--text-muted)]">
+            目前尚未发表学术论文，正在围绕上述方向积累研究。关注
+            <a
+              href="https://security-hyacinth.blog.csdn.net/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[var(--hyacinth-lavender)] hover:underline no-underline ml-1"
+            >
+              CSDN 博客
+            </a>
+            获取最新研究进展与写作分享。
           </p>
         </div>
       </Container>

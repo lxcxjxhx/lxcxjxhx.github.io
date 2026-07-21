@@ -1,4 +1,5 @@
 import { githubProfile } from "./github-data";
+import { csdnStats } from "./csdn-data";
 
 export interface SkillGroup {
   category: string;
@@ -18,16 +19,18 @@ export interface Education {
   institution: string;
 }
 
+const articleCount = csdnStats.totalArticles || 1467;
+
 export const aboutInfo = {
   name: githubProfile.name || "钱佳宏",
   handle: "lxcxjxhx",
-  bio: `${githubProfile.bio || "上海 | 信息安全与 AI 交叉方向研究者。"} CSDN 专家博主，累计发布 1,467 篇技术文章。开源活跃者，GitHub 年度 1,038+ commits，维护 25 个仓库，PyPI 发布 7 个包。`,
+  bio: `${githubProfile.bio || "上海 | 信息安全与 AI 交叉方向研究者。"} CSDN 专家博主，累计发布 ${articleCount.toLocaleString()} 篇技术文章。开源活跃者，GitHub 年度 1,038+ commits，维护 ${githubProfile.publicRepos || 25} 个仓库，PyPI 发布 7 个包。`,
   location: "上海，中国",
   email: "aqfxz_zh@qq.com",
   phone: "+86 19921057118",
   github: githubProfile.htmlUrl || "https://github.com/lxcxjxhx",
   csdn: "https://security-hyacinth.blog.csdn.net/",
-  pypi: "https://pypi.org/user/lxcxjxhx/",
+  pypi: "https://pypi.org/user/security_hyacinth/",
   avatarUrl: githubProfile.avatarUrl,
   publicRepos: githubProfile.publicRepos || 25,
   followers: githubProfile.followers || 37,
@@ -36,7 +39,7 @@ export const aboutInfo = {
   skills: [
     {
       category: "核心领域",
-      items: ["LLM Applications", "Cybersecurity", "Healthcare AI", "DevOps"],
+      items: ["LLM 应用与安全", "系统底层与程序分析", "开源基础设施"],
     },
     {
       category: "编程语言",
@@ -53,14 +56,14 @@ export const aboutInfo = {
       role: "开源贡献者",
       institution: "GitHub / PyPI",
       description:
-        "维护 25 个开源仓库，PyPI 发布 7 个包，合并 20+ PR 到 6 个以上外部项目。",
+        `维护 ${githubProfile.publicRepos || 25} 个开源仓库，PyPI 发布 7 个包，合并 20+ PR 到 6 个以上外部项目。`,
     },
     {
       period: "持续",
       role: "技术博主",
       institution: "CSDN",
       description:
-        "累计发布 1,467 篇技术文章，12+ 专栏，阿里云/华为云/腾讯云认证专家博主。",
+        `累计发布 ${articleCount.toLocaleString()} 篇技术文章，12+ 专栏，阿里云/华为云/腾讯云认证专家博主。`,
     },
   ] as Experience[],
   education: [] as Education[],
@@ -74,7 +77,7 @@ export const aboutInfo = {
   ],
   stats: {
     githubCommits: 1038,
-    csdnArticles: 1467,
+    csdnArticles: articleCount,
     csdnColumns: 12,
     pypiPackages: 7,
     mergedPRs: 20,

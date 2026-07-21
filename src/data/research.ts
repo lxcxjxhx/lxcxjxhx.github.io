@@ -11,7 +11,6 @@ export interface Achievement {
 
 export interface Column {
   name: string;
-  articleCount: number;
   url: string;
 }
 
@@ -19,17 +18,17 @@ export const researchDirections: ResearchDirection[] = [
   {
     title: "LLM 应用与安全",
     description:
-      "探索大语言模型在代码分析、漏洞检测与自动修复中的应用，关注模型推理安全与提示注入防御。",
+      "大语言模型在代码分析、漏洞检测与自动修复中的应用，关注模型推理安全、Prompt 注入防御与 AI 对抗样本。",
   },
   {
-    title: "系统底层与开源基础设施",
+    title: "系统底层与程序分析",
     description:
-      "操作系统内核、程序分析与可复用安全工具链的构建。",
+      "操作系统内核安全、二进制分析、符号执行与可复用安全工具链的构建，强调从底层理解安全机制。",
   },
   {
-    title: "Healthcare AI & DevOps",
+    title: "开源基础设施",
     description:
-      "医疗场景下的 AI 应用与自动化运维实践。",
+      "面向 AI 与安全领域的开源工具链开发，包括代码安全审计引擎、模型优化框架和 AI 原生 IDE。",
   },
 ];
 
@@ -46,10 +45,10 @@ export const certifications: string[] = [
 ];
 
 export const columns: Column[] = [
-  { name: "AI 安全", articleCount: 0, url: "https://blog.csdn.net/lxcxjxhx" },
-  { name: "系统底层", articleCount: 0, url: "https://blog.csdn.net/lxcxjxhx" },
-  { name: "LLM 应用", articleCount: 0, url: "https://blog.csdn.net/lxcxjxhx" },
-  { name: "DevOps 实践", articleCount: 0, url: "https://blog.csdn.net/lxcxjxhx" },
+  { name: "AI 安全攻防", url: "https://blog.csdn.net/lxcxjxhx" },
+  { name: "系统与内核", url: "https://blog.csdn.net/lxcxjxhx" },
+  { name: "LLM 应用开发", url: "https://blog.csdn.net/lxcxjxhx" },
+  { name: "开源工具链", url: "https://blog.csdn.net/lxcxjxhx" },
 ];
 
 export const researchPapers: never[] = [];

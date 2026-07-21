@@ -26,9 +26,9 @@ export default function BlogPage() {
           </a>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-4">
           {posts.map((post) => (
-            <article key={post.id} className="card-solid p-6">
+            <article key={post.id} className="card-solid p-5 border-l-[3px] border-l-[var(--hyacinth-light)]">
               <a
                 href={post.url}
                 target="_blank"

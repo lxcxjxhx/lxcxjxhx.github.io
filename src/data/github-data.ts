@@ -198,6 +198,59 @@ export const githubRepos: GitHubRepo[] = [
 
 export const githubEvents: GitHubEvent[] = [
   {
+    "type": "PullRequestEvent",
+    "repo": "huggingface/transformers",
+    "createdAt": "2026-07-21T14:36:48Z",
+    "payload": {
+      "action": "opened",
+      "ref": null,
+      "ref_type": null,
+      "pulls": {
+        "number": 47456,
+        "title": "",
+        "html_url": ""
+      }
+    }
+  },
+  {
+    "type": "CreateEvent",
+    "repo": "lxcxjxhx/transformers",
+    "createdAt": "2026-07-21T14:36:21Z",
+    "payload": {
+      "action": null,
+      "ref": "fix/tokenizers-version-bound",
+      "ref_type": "branch"
+    }
+  },
+  {
+    "type": "IssueCommentEvent",
+    "repo": "huggingface/transformers",
+    "createdAt": "2026-07-21T14:25:05Z",
+    "payload": {
+      "action": "created",
+      "ref": null,
+      "ref_type": null,
+      "issues": {
+        "number": 47446,
+        "title": "fix: correct typos in comments",
+        "html_url": "https://github.com/huggingface/transformers/pull/47446"
+      },
+      "comment": {
+        "body": "> We're trying not to do these small typo fixes right now! We'll do an agent pass or something to fix them all at once at some point\r\n\r\nthanks\r\n"
+      }
+    }
+  },
+  {
+    "type": "PushEvent",
+    "repo": "lxcxjxhx/lxcxjxhx.github.io",
+    "createdAt": "2026-07-21T13:56:32Z",
+    "payload": {
+      "action": null,
+      "ref": "refs/heads/main",
+      "ref_type": null
+    }
+  },
+  {
     "type": "PushEvent",
     "repo": "lxcxjxhx/lxcxjxhx.github.io",
     "createdAt": "2026-07-21T12:56:37Z",
@@ -1320,54 +1373,6 @@ export const githubEvents: GitHubEvent[] = [
       "action": null,
       "ref": "feat/expand-supported-content-types",
       "ref_type": "branch"
-    }
-  },
-  {
-    "type": "ForkEvent",
-    "repo": "microsoft/PyRIT",
-    "createdAt": "2026-07-19T13:22:32Z",
-    "payload": {
-      "action": "forked",
-      "ref": null,
-      "ref_type": null
-    }
-  },
-  {
-    "type": "IssueCommentEvent",
-    "repo": "microsoft/PyRIT",
-    "createdAt": "2026-07-19T13:05:01Z",
-    "payload": {
-      "action": "created",
-      "ref": null,
-      "ref_type": null,
-      "issues": {
-        "number": 450,
-        "title": "FEAT Add Anthropic/model-written-evals Dataset",
-        "html_url": "https://github.com/microsoft/PyRIT/issues/450"
-      },
-      "comment": {
-        "body": "Hi @romanlutz,\n\nI noticed that PR #1170 for this issue was closed without merging in June 2026. Is this feature still needed?\n\nI'd be happy to work on implementing the Anthropic/model-written-evals dataset integration if it's still a priority. Could you confirm if this issue is still open for contribution?\n\nThanks!"
-      }
-    }
-  },
-  {
-    "type": "PushEvent",
-    "repo": "lxcxjxhx/HOS-Forge",
-    "createdAt": "2026-07-18T17:57:15Z",
-    "payload": {
-      "action": null,
-      "ref": "refs/heads/main",
-      "ref_type": null
-    }
-  },
-  {
-    "type": "ReleaseEvent",
-    "repo": "lxcxjxhx/HOS-Forge",
-    "createdAt": "2026-07-18T17:27:19Z",
-    "payload": {
-      "action": "published",
-      "ref": null,
-      "ref_type": null
     }
   }
 ];
