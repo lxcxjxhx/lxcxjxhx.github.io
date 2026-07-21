@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { aboutInfo } from "../../data/about";
 import SectionTitle from "../ui/SectionTitle";
 import Container from "../layout/Container";
+import AnimatedNumber from "../ui/AnimatedNumber";
 
 export default function AboutSection() {
   return (
@@ -9,87 +10,87 @@ export default function AboutSection() {
       <Container>
         <SectionTitle
           title="关于我"
-          subtitle="研究者的背景、技能与经历"
+          subtitle="背景、技能与开源贡献"
           align="center"
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
-          <div>
-            <p className="text-lg text-[var(--text-muted)] leading-relaxed mb-6">
-              {aboutInfo.bio}
-            </p>
-            <div className="flex flex-wrap gap-3 mb-8">
-              <a
-                href={aboutInfo.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="glow-btn text-sm no-underline"
-              >
-                GitHub
-              </a>
-              <Link
-                to="/about"
-                className="px-5 py-2.5 rounded-full border border-[var(--border-subtle)] text-[var(--text-primary)] font-medium hover:border-[var(--hyacinth-light)] hover:text-[var(--hyacinth-lavender)] transition-all text-sm no-underline"
-              >
-                完整履历
-              </Link>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              {aboutInfo.skills.slice(0, 2).map((group) => (
-                <div key={group.category}>
-                  <h4 className="text-sm font-semibold text-[var(--hyacinth-lavender)] mb-2">
-                    {group.category}
-                  </h4>
-                  <div className="flex flex-wrap gap-2">
-                    {group.items.map((item) => (
-                      <span
-                        key={item}
-                        className="text-xs px-2 py-1 rounded bg-[var(--bg-deep)] text-[var(--text-muted)] border border-[var(--border-subtle)]"
-                      >
-                        {item}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            {aboutInfo.experiences.length > 0 ? (
-              aboutInfo.experiences.map((exp) => (
-                <div key={exp.period} className="card-solid p-5">
-                  <div className="text-xs text-[var(--hyacinth-light)] font-medium mb-1">
-                    {exp.period}
-                  </div>
-                  <h4 className="text-base font-semibold text-[var(--text-primary)] mb-1">
-                    {exp.role}
-                  </h4>
-                  <div className="text-sm text-[var(--hyacinth-lavender)] mb-2">
-                    {exp.institution}
-                  </div>
-                  <p className="text-sm text-[var(--text-muted)] leading-relaxed">
-                    {exp.description}
-                  </p>
-                </div>
-              ))
-            ) : (
-              <div className="card-solid p-5">
-                <div className="text-xs text-[var(--hyacinth-light)] font-medium mb-1">
-                  公开仓库
-                </div>
-                <h4 className="text-base font-semibold text-[var(--text-primary)] mb-1">
-                  {aboutInfo.publicRepos} 个开源项目
-                </h4>
-                <div className="text-sm text-[var(--hyacinth-lavender)] mb-2">
-                  {aboutInfo.followers} 关注者
-                </div>
-                <p className="text-sm text-[var(--text-muted)] leading-relaxed">
-                  加入于 {aboutInfo.joinedAt}
-                </p>
-              </div>
+        <div className="card-solid p-8 mb-8">
+          <div className="flex flex-col md:flex-row gap-6 items-start">
+            {aboutInfo.avatarUrl && (
+              <img
+                src={aboutInfo.avatarUrl}
+                alt={aboutInfo.name}
+                className="w-16 h-16 rounded-full border-2 border-[var(--border-subtle)]"
+              />
             )}
+            <div className="flex-1">
+              <h3 className="text-lg font-bold text-[var(--text-primary)] mb-1">
+                {aboutInfo.name}
+              </h3>
+              <p className="text-sm text-[var(--text-muted)] mb-3">
+                {aboutInfo.location} · {aboutInfo.email}
+              </p>
+              <p className="text-sm text-[var(--text-muted)] leading-relaxed">
+                {aboutInfo.bio}
+              </p>
+            </div>
           </div>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="card-solid p-4 text-center">
+            <div className="text-xl font-bold text-[var(--text-primary)]">
+              <AnimatedNumber value={aboutInfo.stats.githubCommits} suffix="+" />
+            </div>
+            <div className="text-xs text-[var(--text-muted)] mt-1">Commits</div>
+          </div>
+          <div className="card-solid p-4 text-center">
+            <div className="text-xl font-bold text-[var(--text-primary)]">
+              <AnimatedNumber value={aboutInfo.stats.csdnArticles} />
+            </div>
+            <div className="text-xs text-[var(--text-muted)] mt-1">CSDN 文章</div>
+          </div>
+          <div className="card-solid p-4 text-center">
+            <div className="text-xl font-bold text-[var(--text-primary)]">
+              <AnimatedNumber value={aboutInfo.stats.pypiPackages} />
+            </div>
+            <div className="text-xs text-[var(--text-muted)] mt-1">PyPI 包</div>
+          </div>
+          <div className="card-solid p-4 text-center">
+            <div className="text-xl font-bold text-[var(--text-primary)]">
+              <AnimatedNumber value={aboutInfo.stats.mergedPRs} suffix="+" />
+            </div>
+            <div className="text-xs text-[var(--text-muted)] mt-1">Merged PRs</div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          {aboutInfo.skills.slice(0, 2).map((group) => (
+            <div key={group.category} className="card-solid p-5">
+              <h4 className="text-sm font-semibold text-[var(--hyacinth-lavender)] mb-2">
+                {group.category}
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {group.items.map((item) => (
+                  <span
+                    key={item}
+                    className="text-xs px-2 py-1 rounded-full bg-[var(--bg-deep)] text-[var(--text-muted)] border border-[var(--border-subtle)]"
+                  >
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="text-center">
+          <Link
+            to="/about"
+            className="inline-flex items-center gap-2 text-[var(--hyacinth-light)] hover:text-[var(--hyacinth-lavender)] transition-colors font-medium"
+          >
+            了解更多 <span>→</span>
+          </Link>
         </div>
       </Container>
     </section>

@@ -5,3 +5,7 @@ dist/
 .DS_Store
 .next/
 dist-test-rollup/
+
+# Auto-generated data files (regenerated during prebuild)
+src/data/csdn-data.ts
+src/data/github-data.ts

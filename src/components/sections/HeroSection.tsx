@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import Container from "../layout/Container";
+import { aboutInfo } from "../../data/about";
 
 export default function HeroSection() {
+  const { stats } = aboutInfo;
+
   return (
     <section className="relative min-h-[80vh] flex items-center justify-center">
       <Container size="md" className="text-center relative z-10 py-20">
@@ -10,7 +13,7 @@ export default function HeroSection() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--hyacinth-green)] opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--hyacinth-green)]"></span>
           </span>
-          正在招募合作者
+          CSDN {stats.csdnArticles.toLocaleString()} 篇文章 · {stats.mergedPRs}+ 合并 PR
         </div>
         <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
           <span className="gradient-text-hero">AI · 安全 · 系统底层</span>

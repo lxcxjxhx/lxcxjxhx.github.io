@@ -24,7 +24,23 @@ export default function Footer() {
             GitHub
           </a>
           <a
-            href="mailto:hos@example.com"
+            href="https://security-hyacinth.blog.csdn.net/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-[var(--text-muted)] hover:text-[var(--hyacinth-lavender)] transition-colors"
+          >
+            CSDN
+          </a>
+          <a
+            href="https://pypi.org/user/lxcxjxhx/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-[var(--text-muted)] hover:text-[var(--hyacinth-lavender)] transition-colors"
+          >
+            PyPI
+          </a>
+          <a
+            href="mailto:aqfxz_zh@qq.com"
             className="text-sm text-[var(--text-muted)] hover:text-[var(--hyacinth-lavender)] transition-colors"
           >
             邮件

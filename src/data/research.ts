@@ -1,16 +1,55 @@
-export const researchDirections = [
+export interface ResearchDirection {
+  title: string;
+  description: string;
+}
+
+export interface Achievement {
+  title: string;
+  level: string;
+  year: string;
+}
+
+export interface Column {
+  name: string;
+  articleCount: number;
+  url: string;
+}
+
+export const researchDirections: ResearchDirection[] = [
   {
-    title: "AI 驱动的安全分析",
-    description: "利用大语言模型进行代码漏洞检测、攻击链推理与自动修复",
+    title: "LLM 应用与安全",
+    description:
+      "探索大语言模型在代码分析、漏洞检测与自动修复中的应用，关注模型推理安全与提示注入防御。",
   },
   {
-    title: "LLM 推理与训练优化",
-    description: "量化、蒸馏与高效推理，包括 llama.cpp、vLLM、SGLang 等工具链集成",
+    title: "系统底层与开源基础设施",
+    description:
+      "操作系统内核、程序分析与可复用安全工具链的构建。",
   },
   {
-    title: "开源安全基础设施",
-    description: "构建可复用的安全工具与 AI 原生开发环境",
+    title: "Healthcare AI & DevOps",
+    description:
+      "医疗场景下的 AI 应用与自动化运维实践。",
   },
+];
+
+export const researchAchievements: Achievement[] = [
+  { title: "中美青年创客大赛", level: "大奖", year: "" },
+  { title: "Intel AI 竞赛", level: "获奖", year: "" },
+];
+
+export const certifications: string[] = [
+  "阿里云专家博主",
+  "华为云专家博主",
+  "腾讯云创作者之星",
+  "网络安全应急响应（中级）",
+];
+
+export const columns: Column[] = [
+  { name: "AI 安全", articleCount: 0, url: "https://blog.csdn.net/lxcxjxhx" },
+  { name: "系统底层", articleCount: 0, url: "https://blog.csdn.net/lxcxjxhx" },
+  { name: "LLM 应用", articleCount: 0, url: "https://blog.csdn.net/lxcxjxhx" },
+  { name: "DevOps 实践", articleCount: 0, url: "https://blog.csdn.net/lxcxjxhx" },
 ];
 
 export const researchPapers: never[] = [];

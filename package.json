@@ -5,10 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "node scripts/fetch-github-data.mjs",
+    "prebuild": "node scripts/fetch-github-data.mjs && node scripts/fetch-csdn-data.mjs",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "fetch-data": "node scripts/fetch-github-data.mjs"
+    "fetch-data": "node scripts/fetch-github-data.mjs && node scripts/fetch-csdn-data.mjs"
   },
   "dependencies": {
     "react": "^18.3.0",

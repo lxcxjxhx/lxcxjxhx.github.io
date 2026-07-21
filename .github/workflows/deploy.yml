@@ -32,6 +32,9 @@ jobs:
       - name: Fetch GitHub Data
         run: node scripts/fetch-github-data.mjs
 
+      - name: Fetch CSDN Data
+        run: node scripts/fetch-csdn-data.mjs
+
       - name: Build
         run: npm run build
 

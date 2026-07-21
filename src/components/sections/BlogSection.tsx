@@ -1,55 +1,50 @@
 import { Link } from "react-router-dom";
-import { getActivityFeed } from "../../data/blog";
+import { getBlogPosts, getBlogStats } from "../../data/blog";
 import SectionTitle from "../ui/SectionTitle";
-import Badge from "../ui/Badge";
 import Container from "../layout/Container";
 
 export default function BlogSection() {
-  const activityFeed = getActivityFeed();
+  const posts = getBlogPosts().slice(0, 3);
+  const stats = getBlogStats();
 
   return (
     <section className="py-20 relative z-10 border-t border-[var(--border-subtle)]">
       <Container>
         <SectionTitle
-          title="最近动态"
-          subtitle="GitHub 开源活动记录与项目更新"
+          title="博客文章"
+          subtitle={`来自 CSDN 的技术写作 · 累计 ${stats.totalArticles} 篇文章`}
           align="center"
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {activityFeed.slice(0, 3).map((post) => (
-            <Link
-              key={post.id}
-              to={`/blog`}
-              className="card-solid block p-6 no-underline group"
-            >
-              <div className="flex flex-wrap gap-2 mb-3">
-                {post.tags.slice(0, 2).map((tag) => (
-                  <Badge key={tag} variant="purple">
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-              <h3 className="text-lg font-semibold text-[var(--text-primary)] group-hover:text-[var(--hyacinth-lavender)] transition-colors mb-3 line-clamp-2">
-                {post.title}
-              </h3>
-              <p className="text-sm text-[var(--text-muted)] leading-relaxed mb-4 line-clamp-3">
+        <div className="space-y-4 mb-10">
+          {posts.map((post) => (
+            <article key={post.id} className="card-solid p-5">
+              <a
+                href={post.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="no-underline block"
+              >
+                <h3 className="text-base font-semibold text-[var(--text-primary)] hover:text-[var(--hyacinth-lavender)] transition-colors mb-1">
+                  {post.title}
+                </h3>
+              </a>
+              <p className="text-sm text-[var(--text-muted)] leading-relaxed line-clamp-2">
                 {post.summary}
               </p>
-              <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
+              <div className="flex items-center gap-3 mt-2 text-xs text-[var(--text-muted)]">
                 <span>{post.publishedAt}</span>
-                <span>{post.readingTime} 分钟阅读</span>
               </div>
-            </Link>
+            </article>
           ))}
         </div>
 
-        <div className="text-center mt-10">
+        <div className="text-center">
           <Link
             to="/blog"
             className="inline-flex items-center gap-2 text-[var(--hyacinth-light)] hover:text-[var(--hyacinth-lavender)] transition-colors font-medium"
           >
-            查看全部动态 <span>→</span>
+            查看全部文章 <span>→</span>
           </Link>
         </div>
       </Container>

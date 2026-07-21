@@ -198,6 +198,16 @@ export const githubRepos: GitHubRepo[] = [
 
 export const githubEvents: GitHubEvent[] = [
   {
+    "type": "PushEvent",
+    "repo": "lxcxjxhx/lxcxjxhx.github.io",
+    "createdAt": "2026-07-21T12:56:37Z",
+    "payload": {
+      "action": null,
+      "ref": "refs/heads/main",
+      "ref_type": null
+    }
+  },
+  {
     "type": "PullRequestEvent",
     "repo": "lxcxjxhx/HOS_SKILL_WORKFLOW",
     "createdAt": "2026-07-21T11:12:28Z",
@@ -1357,16 +1367,6 @@ export const githubEvents: GitHubEvent[] = [
     "payload": {
       "action": "published",
       "ref": null,
-      "ref_type": null
-    }
-  },
-  {
-    "type": "PushEvent",
-    "repo": "lxcxjxhx/HOS-Forge",
-    "createdAt": "2026-07-18T17:27:12Z",
-    "payload": {
-      "action": null,
-      "ref": "refs/heads/main",
       "ref_type": null
     }
   }

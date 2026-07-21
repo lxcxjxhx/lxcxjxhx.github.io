@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2C2D2F"/>
+      <stop offset="100%" stop-color="#1A1A1C"/>
+    </radialGradient>
+    <linearGradient id="petal1" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#862C3B"/>
+      <stop offset="100%" stop-color="#B33F4E"/>
+    </linearGradient>
+    <linearGradient id="petal2" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#8C6E9F"/>
+      <stop offset="100%" stop-color="#B49BC4"/>
+    </linearGradient>
+    <linearGradient id="petal3" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#6CCB4C"/>
+      <stop offset="100%" stop-color="#8EE073"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background circle -->
+  <circle cx="50" cy="50" r="48" fill="url(#bg)" stroke="#3B3D38" stroke-width="1"/>
+
+  <!-- Hyacinth spike stem -->
+  <line x1="50" y1="72" x2="50" y2="38" stroke="#6CCB4C" stroke-width="2.5" stroke-linecap="round" opacity="0.9"/>
+
+  <!-- Bottom petal row (3) -->
+  <ellipse cx="42" cy="64" rx="5" ry="7" fill="url(#petal1)" transform="rotate(-25 42 64)" filter="url(#glow)"/>
+  <ellipse cx="50" cy="66" rx="5.5" ry="7.5" fill="url(#petal1)" filter="url(#glow)"/>
+  <ellipse cx="58" cy="64" rx="5" ry="7" fill="url(#petal1)" transform="rotate(25 58 64)" filter="url(#glow)"/>
+
+  <!-- Middle petal row (3) -->
+  <ellipse cx="41" cy="52" rx="5" ry="7" fill="url(#petal2)" transform="rotate(-20 41 52)" filter="url(#glow)"/>
+  <ellipse cx="50" cy="54" rx="5.5" ry="7.5" fill="url(#petal2)" filter="url(#glow)"/>
+  <ellipse cx="59" cy="52" rx="5" ry="7" fill="url(#petal2)" transform="rotate(20 59 52)" filter="url(#glow)"/>
+
+  <!-- Top petal row (3) -->
+  <ellipse cx="43" cy="41" rx="4.5" ry="6.5" fill="url(#petal3)" transform="rotate(-15 43 41)" filter="url(#glow)"/>
+  <ellipse cx="50" cy="42" rx="5" ry="7" fill="url(#petal3)" filter="url(#glow)"/>
+  <ellipse cx="57" cy="41" rx="4.5" ry="6.5" fill="url(#petal3)" transform="rotate(15 57 41)" filter="url(#glow)"/>
+
+  <!-- Tiny top bud -->
+  <circle cx="50" cy="34" r="3" fill="#B49BC4" filter="url(#glow)"/>
+</svg>
