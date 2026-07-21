@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
 import { aboutInfo } from "../../data/about";
 import SectionTitle from "../ui/SectionTitle";
+import Container from "../layout/Container";
 
 export default function AboutSection() {
   return (
-    <section className="py-20 px-4 relative z-10 border-t border-[var(--border-subtle)]">
-      <div className="max-w-6xl mx-auto">
+    <section className="py-20 relative z-10 border-t border-[var(--border-subtle)]">
+      <Container>
         <SectionTitle
           title="关于我"
           subtitle="研究者的背景、技能与经历"
@@ -55,28 +56,42 @@ export default function AboutSection() {
           </div>
 
           <div className="space-y-4">
-            {aboutInfo.experiences.map((exp) => (
-              <div
-                key={exp.period}
-                className="card-solid p-5"
-              >
+            {aboutInfo.experiences.length > 0 ? (
+              aboutInfo.experiences.map((exp) => (
+                <div key={exp.period} className="card-solid p-5">
+                  <div className="text-xs text-[var(--hyacinth-light)] font-medium mb-1">
+                    {exp.period}
+                  </div>
+                  <h4 className="text-base font-semibold text-[var(--text-primary)] mb-1">
+                    {exp.role}
+                  </h4>
+                  <div className="text-sm text-[var(--hyacinth-lavender)] mb-2">
+                    {exp.institution}
+                  </div>
+                  <p className="text-sm text-[var(--text-muted)] leading-relaxed">
+                    {exp.description}
+                  </p>
+                </div>
+              ))
+            ) : (
+              <div className="card-solid p-5">
                 <div className="text-xs text-[var(--hyacinth-light)] font-medium mb-1">
-                  {exp.period}
+                  公开仓库
                 </div>
                 <h4 className="text-base font-semibold text-[var(--text-primary)] mb-1">
-                  {exp.role}
+                  {aboutInfo.publicRepos} 个开源项目
                 </h4>
                 <div className="text-sm text-[var(--hyacinth-lavender)] mb-2">
-                  {exp.institution}
+                  {aboutInfo.followers} 关注者
                 </div>
                 <p className="text-sm text-[var(--text-muted)] leading-relaxed">
-                  {exp.description}
+                  加入于 {aboutInfo.joinedAt}
                 </p>
               </div>
-            ))}
+            )}
           </div>
         </div>
-      </div>
+      </Container>
     </section>
   );
 }

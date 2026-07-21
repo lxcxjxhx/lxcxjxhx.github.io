@@ -1,14 +1,16 @@
-import { projects } from "../data/projects";
+import { getProjects } from "../data/projects";
 import SectionTitle from "../components/ui/SectionTitle";
 import Card from "../components/ui/Card";
 import AnimatedNumber from "../components/ui/AnimatedNumber";
+import Container from "../components/layout/Container";
 
 export default function ProjectsPage() {
+  const projects = getProjects();
   const totalStars = projects.reduce((sum, p) => sum + (p.stars || 0), 0);
 
   return (
-    <div className="pt-24 pb-12 px-4 min-h-screen">
-      <div className="max-w-6xl mx-auto">
+    <div className="pt-24 pb-12 min-h-screen">
+      <Container>
         <SectionTitle
           title="开源项目"
           subtitle="可复用的安全与 AI 基础设施工具"
@@ -42,7 +44,7 @@ export default function ProjectsPage() {
             />
           ))}
         </div>
-      </div>
+      </Container>
     </div>
   );
 }

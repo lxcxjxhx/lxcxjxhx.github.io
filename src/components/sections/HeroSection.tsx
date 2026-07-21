@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
+import Container from "../layout/Container";
 
 export default function HeroSection() {
   return (
-    <section className="relative min-h-[80vh] flex items-center justify-center px-4">
-      <div className="max-w-4xl mx-auto text-center relative z-10">
+    <section className="relative min-h-[80vh] flex items-center justify-center">
+      <Container size="md" className="text-center relative z-10 py-20">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[var(--hyacinth-light)]/30 bg-[var(--hyacinth-light)]/5 text-[var(--hyacinth-lavender)] text-sm mb-6">
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--hyacinth-green)] opacity-75"></span>
@@ -28,7 +29,7 @@ export default function HeroSection() {
             阅读论文
           </Link>
         </div>
-      </div>
+      </Container>
     </section>
   );
 }

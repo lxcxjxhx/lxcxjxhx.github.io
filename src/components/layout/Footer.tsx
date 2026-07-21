@@ -1,9 +1,11 @@
+import Container from "./Container";
+
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
     <footer className="border-t border-[var(--border-subtle)] py-8 mt-20">
-      <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
+      <Container className="flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-2">
           <span className="w-6 h-6 rounded bg-gradient-to-br from-[var(--hyacinth-crimson)] to-[var(--hyacinth-green)] flex items-center justify-center text-white font-bold text-xs">
             H
@@ -28,7 +30,7 @@ export default function Footer() {
             邮件
           </a>
         </div>
-      </div>
+      </Container>
     </footer>
   );
 }

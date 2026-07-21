@@ -1,23 +1,26 @@
 import { Link } from "react-router-dom";
-import { blogPosts } from "../../data/blog";
+import { getActivityFeed } from "../../data/blog";
 import SectionTitle from "../ui/SectionTitle";
 import Badge from "../ui/Badge";
+import Container from "../layout/Container";
 
 export default function BlogSection() {
+  const activityFeed = getActivityFeed();
+
   return (
-    <section className="py-20 px-4 relative z-10 border-t border-[var(--border-subtle)]">
-      <div className="max-w-6xl mx-auto">
+    <section className="py-20 relative z-10 border-t border-[var(--border-subtle)]">
+      <Container>
         <SectionTitle
-          title="技术博客"
-          subtitle="关于工程实践、安全研究与系统设计的思考"
+          title="最近动态"
+          subtitle="GitHub 开源活动记录与项目更新"
           align="center"
         />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {blogPosts.map((post) => (
+          {activityFeed.slice(0, 3).map((post) => (
             <Link
               key={post.id}
-              to={`/blog/${post.slug}`}
+              to={`/blog`}
               className="card-solid block p-6 no-underline group"
             >
               <div className="flex flex-wrap gap-2 mb-3">
@@ -46,10 +49,10 @@ export default function BlogSection() {
             to="/blog"
             className="inline-flex items-center gap-2 text-[var(--hyacinth-light)] hover:text-[var(--hyacinth-lavender)] transition-colors font-medium"
           >
-            查看全部文章 <span>→</span>
+            查看全部动态 <span>→</span>
           </Link>
         </div>
-      </div>
+      </Container>
     </section>
   );
 }

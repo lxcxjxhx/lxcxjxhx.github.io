@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import Container from "./Container";
 
 const navItems = [
   { path: "/", label: "首页" },
@@ -15,7 +16,7 @@ export default function Header() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-40 border-b border-[var(--border-subtle)] bg-[var(--bg-primary)]/80 backdrop-blur-md">
-      <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <Container className="h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 no-underline group">
           <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-[var(--hyacinth-crimson)] to-[var(--hyacinth-green)] flex items-center justify-center text-white font-bold text-sm">
             H
@@ -61,26 +62,28 @@ export default function Header() {
             )}
           </svg>
         </button>
-      </div>
+      </Container>
 
       {mobileOpen && (
         <div className="md:hidden border-t border-[var(--border-subtle)] bg-[var(--bg-primary)]/95 backdrop-blur-md">
-          {navItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className="block px-4 py-3 text-sm font-medium border-b border-[var(--border-subtle)] last:border-0"
-              style={{
-                color:
-                  location.pathname === item.path
-                    ? "var(--hyacinth-lavender)"
-                    : "var(--text-muted)",
-              }}
-              onClick={() => setMobileOpen(false)}
-            >
-              {item.label}
-            </Link>
-          ))}
+          <Container>
+            {navItems.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                className="block py-3 text-sm font-medium border-b border-[var(--border-subtle)] last:border-0 -mx-4 px-4"
+                style={{
+                  color:
+                    location.pathname === item.path
+                      ? "var(--hyacinth-lavender)"
+                      : "var(--text-muted)",
+                }}
+                onClick={() => setMobileOpen(false)}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </Container>
         </div>
       )}
     </header>

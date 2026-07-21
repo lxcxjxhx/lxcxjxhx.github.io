@@ -1,34 +1,63 @@
-import type { BlogPost } from "../types";
+import { githubEvents, githubRepos } from "./github-data";
+import type { GitHubEvent } from "./github-data";
 
-export const blogPosts: BlogPost[] = [
-  {
-    id: "post-1",
-    title: "从零构建静态分析器：AST 遍历与数据流分析实践",
-    summary:
-      "本文记录如何使用 Rust 构建一个支持跨过程分析的轻量级静态分析器，涵盖 AST 生成、CFG 构建与污点追踪。",
-    tags: ["Rust", "静态分析", "编译原理"],
-    publishedAt: "2025-06-15",
-    readingTime: 18,
-    slug: "building-static-analyzer-from-scratch",
-  },
-  {
-    id: "post-2",
-    title: "Unsloth + LoRA：安全领域大模型微调的成本控制",
-    summary:
-      "分享在安全数据集上微调 Qwen2.5-Coder 的经验，包括显存优化策略、训练管线搭建与量化部署。",
-    tags: ["LLM", "Unsloth", "LoRA", "AI安全"],
-    publishedAt: "2025-05-22",
-    readingTime: 12,
-    slug: "unsloth-lora-security-finetune",
-  },
-  {
-    id: "post-3",
-    title: "GitHub Actions 自动化：从 CI 到安全发布管线",
-    summary:
-      "设计一套覆盖代码审查、依赖扫描、SBOM 生成与签名发布的完整 GitHub Actions 工作流。",
-    tags: ["DevSecOps", "GitHub Actions", "供应链安全"],
-    publishedAt: "2025-04-10",
-    readingTime: 15,
-    slug: "github-actions-security-pipeline",
-  },
-];
+export interface BlogPost {
+  id: string;
+  title: string;
+  summary: string;
+  tags: string[];
+  slug: string;
+  publishedAt: string;
+  readingTime: number;
+}
+
+function formatEventTitle(event: GitHubEvent): string {
+  const repoName = event.repo.split("/")[1] || event.repo;
+  switch (event.type) {
+    case "PushEvent":
+      return `代码更新: ${repoName}`;
+    case "PullRequestEvent":
+      return `PR ${event.payload?.action || ""}: ${repoName}`;
+    case "CreateEvent":
+      return `创建分支: ${repoName}`;
+    case "IssueCommentEvent":
+      return `评论了 Issue: ${repoName}`;
+    case "IssuesEvent":
+      return `Issue ${event.payload?.action || ""}: ${repoName}`;
+    case "DeleteEvent":
+      return `删除分支: ${repoName}`;
+    case "ReleaseEvent":
+      return `发布: ${repoName}`;
+    case "WatchEvent":
+      return `Star: ${repoName}`;
+    case "ForkEvent":
+      return `Fork: ${repoName}`;
+    default:
+      return `${event.type}: ${repoName}`;
+  }
+}
+
+export function getActivityFeed(): BlogPost[] {
+  const repoMap = new Map(githubRepos.map((r) => [r.fullName, r]));
+
+  return githubEvents
+    .filter((e) => {
+      if (e.type === "ForkEvent") return false;
+      if (e.repo === "lxcxjxhx/lxcxjxhx") return false;
+      if (e.repo === "lxcxjxhx/lxcxjxhx.github.io") return false;
+      return true;
+    })
+    .slice(0, 20)
+    .map((event, i) => {
+      const repo = repoMap.get(event.repo);
+      return {
+        id: `event-${i}`,
+        title: formatEventTitle(event),
+        summary: repo?.description || event.repo,
+        tags: [event.type.replace("Event", ""), event.repo.split("/")[1]],
+        slug: `activity-${i}`,
+        publishedAt: new Date(event.createdAt).toLocaleDateString("zh-CN"),
+        readingTime: 1,
+      };
+    });
+}

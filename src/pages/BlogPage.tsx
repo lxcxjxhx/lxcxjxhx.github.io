@@ -1,19 +1,22 @@
-import { blogPosts } from "../data/blog";
+import { getActivityFeed } from "../data/blog";
 import SectionTitle from "../components/ui/SectionTitle";
 import Badge from "../components/ui/Badge";
+import Container from "../components/layout/Container";
 
 export default function BlogPage() {
+  const activityFeed = getActivityFeed();
+
   return (
-    <div className="pt-24 pb-12 px-4 min-h-screen">
-      <div className="max-w-4xl mx-auto">
+    <div className="pt-24 pb-12 min-h-screen">
+      <Container size="md">
         <SectionTitle
-          title="技术博客"
-          subtitle="工程实践、安全研究与系统设计的思考记录"
+          title="最近动态"
+          subtitle="GitHub 开源活动记录与项目更新"
           align="left"
         />
 
         <div className="space-y-6">
-          {blogPosts.map((post) => (
+          {activityFeed.map((post) => (
             <article key={post.id} className="card-solid p-6 group cursor-pointer">
               <div className="flex flex-wrap gap-2 mb-3">
                 {post.tags.map((tag) => (
@@ -36,7 +39,7 @@ export default function BlogPage() {
             </article>
           ))}
         </div>
-      </div>
+      </Container>
     </div>
   );
 }

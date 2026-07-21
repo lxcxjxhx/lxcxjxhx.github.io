@@ -1,5 +1,5 @@
 import { Routes, Route, useLocation } from "react-router-dom";
-import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import CanvasBackground from "./components/effects/CanvasBackground";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
@@ -11,71 +11,49 @@ import BlogPage from "./pages/BlogPage";
 import AboutPage from "./pages/AboutPage";
 
 function AnimatedPage({ children }: { children: React.ReactNode }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 30, scale: 0.98 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: -20, scale: 0.98 }}
-      transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-    >
-      {children}
-    </motion.div>
-  );
+  return <div className="page-transition">{children}</div>;
 }
 
 export default function App() {
   const location = useLocation();
+  const [displayLocation, setDisplayLocation] = useState(location);
+  const [transitionStage, setTransitionStage] = useState("fadeIn");
+
+  useEffect(() => {
+    if (location.pathname !== displayLocation.pathname) {
+      setTransitionStage("fadeOut");
+      const timer = setTimeout(() => {
+        setDisplayLocation(location);
+        setTransitionStage("fadeIn");
+      }, 200);
+      return () => clearTimeout(timer);
+    }
+  }, [location, displayLocation]);
 
   return (
     <>
       <CanvasBackground />
       <div className="relative z-10 min-h-screen flex flex-col">
         <Header />
-        <main className="flex-1">
-          <AnimatePresence mode="wait">
-            <Routes location={location} key={location.pathname}>
-              <Route
-                path="/"
-                element={
-                  <AnimatedPage>
-                    <HomePage />
-                  </AnimatedPage>
-                }
-              />
-              <Route
-                path="/research"
-                element={
-                  <AnimatedPage>
-                    <ResearchPage />
-                  </AnimatedPage>
-                }
-              />
-              <Route
-                path="/projects"
-                element={
-                  <AnimatedPage>
-                    <ProjectsPage />
-                  </AnimatedPage>
-                }
-              />
-              <Route
-                path="/blog"
-                element={
-                  <AnimatedPage>
-                    <BlogPage />
-                  </AnimatedPage>
-                }
-              />
-              <Route
-                path="/about"
-                element={
-                  <AnimatedPage>
-                    <AboutPage />
-                  </AnimatedPage>
-                }
-              />
-            </Routes>
-          </AnimatePresence>
+        <main className="flex-1 pt-16">
+          <div
+            className={`transition-all duration-300 ${
+              transitionStage === "fadeIn"
+                ? "opacity-100 translate-y-0 scale-100"
+                : "opacity-0 -translate-y-5 scale-[0.98]"
+            }`}
+            key={displayLocation.pathname}
+          >
+            <AnimatedPage>
+              <Routes location={displayLocation}>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/research" element={<ResearchPage />} />
+                <Route path="/projects" element={<ProjectsPage />} />
+                <Route path="/blog" element={<BlogPage />} />
+                <Route path="/about" element={<AboutPage />} />
+              </Routes>
+            </AnimatedPage>
+          </div>
         </main>
         <Footer />
         <FloatingWidget />

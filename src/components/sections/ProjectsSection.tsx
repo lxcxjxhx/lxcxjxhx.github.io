@@ -1,15 +1,17 @@
 import { Link } from "react-router-dom";
-import { projects } from "../../data/projects";
+import { getProjects } from "../../data/projects";
 import SectionTitle from "../ui/SectionTitle";
 import Card from "../ui/Card";
 import AnimatedNumber from "../ui/AnimatedNumber";
+import Container from "../layout/Container";
 
 export default function ProjectsSection() {
+  const projects = getProjects();
   const totalStars = projects.reduce((sum, p) => sum + (p.stars || 0), 0);
 
   return (
-    <section className="py-20 px-4 relative z-10 border-t border-[var(--border-subtle)]">
-      <div className="max-w-6xl mx-auto">
+    <section className="py-20 relative z-10 border-t border-[var(--border-subtle)]">
+      <Container>
         <SectionTitle
           title="开源项目"
           subtitle="构建 AI 安全与系统底层的基础设施工具"
@@ -52,7 +54,7 @@ export default function ProjectsSection() {
             查看全部项目 <span>→</span>
           </Link>
         </div>
-      </div>
+      </Container>
     </section>
   );
 }
