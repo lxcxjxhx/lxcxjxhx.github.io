@@ -15,6 +15,15 @@ export default function BlogPage() {
           align="left"
         />
 
+        {/* 页面装饰 AI 图画 */}
+        <div className="mb-8">
+          <img
+            src="/illustrations/blog-header.jpg"
+            alt="代码瀑布与风信子花瓣"
+            className="w-full h-48 md:h-64 object-cover opacity-80 rounded-2xl"
+          />
+        </div>
+
         <div className="mb-8">
           <a
             href="https://security-hyacinth.blog.csdn.net/"

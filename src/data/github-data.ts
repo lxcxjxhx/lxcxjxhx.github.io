@@ -200,6 +200,16 @@ export const githubEvents: GitHubEvent[] = [
   {
     "type": "PushEvent",
     "repo": "lxcxjxhx/lxcxjxhx.github.io",
+    "createdAt": "2026-07-22T04:10:50Z",
+    "payload": {
+      "action": null,
+      "ref": "refs/heads/main",
+      "ref_type": null
+    }
+  },
+  {
+    "type": "PushEvent",
+    "repo": "lxcxjxhx/lxcxjxhx.github.io",
     "createdAt": "2026-07-22T01:53:18Z",
     "payload": {
       "action": null,
@@ -1357,16 +1367,6 @@ export const githubEvents: GitHubEvent[] = [
     "payload": {
       "action": null,
       "ref": "main",
-      "ref_type": "branch"
-    }
-  },
-  {
-    "type": "CreateEvent",
-    "repo": "lxcxjxhx/academic-resume",
-    "createdAt": "2026-07-19T14:16:04Z",
-    "payload": {
-      "action": null,
-      "ref": "master",
       "ref_type": "branch"
     }
   }
