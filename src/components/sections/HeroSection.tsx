@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import Container from "../layout/Container";
 import { aboutInfo } from "../../data/about";
+import HeroIllustration from "../illustrations/HeroIllustration";
 
 export default function HeroSection() {
   const { name, bio } = aboutInfo;
@@ -39,16 +40,9 @@ export default function HeroSection() {
             </div>
           </div>
 
-          {/* Right: Decorative illustration (hidden on mobile) */}
+          {/* Right: SVG 动态插图 (hidden on mobile) */}
           <div className="hidden md:block relative">
-            <img
-              src="/illustrations/hero-decoration.jpg"
-              alt=""
-              className="w-full rounded-2xl opacity-80"
-              loading="eager"
-            />
-            {/* Glow overlay */}
-            <div className="absolute inset-0 rounded-2xl bg-gradient-to-t from-[var(--bg-primary)] via-transparent to-transparent opacity-40" />
+            <HeroIllustration />
           </div>
         </div>
       </Container>

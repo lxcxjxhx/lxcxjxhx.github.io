@@ -51,6 +51,22 @@ export const githubProfile: GitHubProfile = {
 
 export const githubRepos: GitHubRepo[] = [
   {
+    "id": 1305764793,
+    "name": "academic-resume",
+    "fullName": "lxcxjxhx/academic-resume",
+    "description": "Academic resume for research assistant applications (auto PDF/DOCX)",
+    "htmlUrl": "https://github.com/lxcxjxhx/academic-resume",
+    "homepage": null,
+    "language": "HTML",
+    "stargazersCount": 1,
+    "forksCount": 0,
+    "openIssuesCount": 0,
+    "topics": [],
+    "pushedAt": "2026-07-19T14:16:19Z",
+    "createdAt": "2026-07-19T14:15:55Z",
+    "license": null
+  },
+  {
     "id": 1139856034,
     "name": "HOS_SKILL_WORKFLOW",
     "fullName": "lxcxjxhx/HOS_SKILL_WORKFLOW",
@@ -131,22 +147,6 @@ export const githubRepos: GitHubRepo[] = [
     "license": null
   },
   {
-    "id": 1305764793,
-    "name": "academic-resume",
-    "fullName": "lxcxjxhx/academic-resume",
-    "description": "Academic resume for research assistant applications (auto PDF/DOCX)",
-    "htmlUrl": "https://github.com/lxcxjxhx/academic-resume",
-    "homepage": null,
-    "language": "HTML",
-    "stargazersCount": 2,
-    "forksCount": 0,
-    "openIssuesCount": 0,
-    "topics": [],
-    "pushedAt": "2026-07-19T14:16:19Z",
-    "createdAt": "2026-07-19T14:15:55Z",
-    "license": null
-  },
-  {
     "id": 987559727,
     "name": "HOS-MATCH-PROJECT",
     "fullName": "lxcxjxhx/HOS-MATCH-PROJECT",
@@ -197,6 +197,16 @@ export const githubRepos: GitHubRepo[] = [
 ];
 
 export const githubEvents: GitHubEvent[] = [
+  {
+    "type": "PushEvent",
+    "repo": "lxcxjxhx/lxcxjxhx.github.io",
+    "createdAt": "2026-07-21T14:49:46Z",
+    "payload": {
+      "action": null,
+      "ref": "refs/heads/main",
+      "ref_type": null
+    }
+  },
   {
     "type": "PullRequestEvent",
     "repo": "huggingface/transformers",
@@ -1253,21 +1263,6 @@ export const githubEvents: GitHubEvent[] = [
     }
   },
   {
-    "type": "PullRequestReviewEvent",
-    "repo": "microsoft/PyRIT",
-    "createdAt": "2026-07-20T04:21:07Z",
-    "payload": {
-      "action": "created",
-      "ref": null,
-      "ref_type": null,
-      "pulls": {
-        "number": 2233,
-        "title": "",
-        "html_url": ""
-      }
-    }
-  },
-  {
     "type": "PullRequestReviewCommentEvent",
     "repo": "microsoft/PyRIT",
     "createdAt": "2026-07-20T04:21:07Z",
@@ -1282,6 +1277,21 @@ export const githubEvents: GitHubEvent[] = [
       },
       "comment": {
         "body": "Thank you for the detailed feedback, @romanlutz! I've addressed your concerns:\n\n1. **Modified `AzureBlobStorageIO.write_file_async`**: Added an optional `content_type` parameter that allows specifying the MIME type per file.\n\n2. **Auto-detection of MIME types**: Implemented logic using `mimetypes.guess_type` to automatically infer the content type from file extensions when not explicitly provided.\n\n3. **Updated serializers**: Modified `save_data_async`, `save_b64_image_async`, and `save_formatted_audio_async` to pass the inferred `content_type` when saving data.\n\n4. **Consolidated `SupportedContentType` enum**: Removed the duplicate `AzureBlobStorageTarget` enum and unified the content type definitions in `pyrit.memory.storage.storage`.\n\n5. **Added unit tests**: Created tests to verify the content type inference and propagation logic.\n\n6. **Testing**: Due to local environment constraints (incomplete dependencies on Windows), I'm relying on the CI/CD pipeline to run the full test suite automatically.\n\nThe changes should now properly enable the advertised media types by wiring MIME selection into the file upload workflow. Please let me know if you need any additional modifications!"
+      }
+    }
+  },
+  {
+    "type": "PullRequestReviewEvent",
+    "repo": "microsoft/PyRIT",
+    "createdAt": "2026-07-20T04:21:07Z",
+    "payload": {
+      "action": "created",
+      "ref": null,
+      "ref_type": null,
+      "pulls": {
+        "number": 2233,
+        "title": "",
+        "html_url": ""
       }
     }
   },
@@ -1363,16 +1373,6 @@ export const githubEvents: GitHubEvent[] = [
         "title": "",
         "html_url": ""
       }
-    }
-  },
-  {
-    "type": "CreateEvent",
-    "repo": "lxcxjxhx/PyRIT",
-    "createdAt": "2026-07-19T13:23:04Z",
-    "payload": {
-      "action": null,
-      "ref": "feat/expand-supported-content-types",
-      "ref_type": "branch"
     }
   }
 ];

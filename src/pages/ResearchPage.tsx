@@ -6,6 +6,7 @@ import {
 } from "../data/research";
 import SectionTitle from "../components/ui/SectionTitle";
 import Container from "../components/layout/Container";
+import ResearchIllustration from "../components/illustrations/ResearchIllustration";
 
 export default function ResearchPage() {
   return (
@@ -17,13 +18,9 @@ export default function ResearchPage() {
           align="left"
         />
 
-        {/* 页面装饰插图 */}
-        <div className="mb-10 overflow-hidden rounded-xl border border-[var(--border-subtle)]">
-          <img
-            src="/illustrations/research-header.jpg"
-            alt="学术与研究"
-            className="w-full h-48 md:h-64 object-cover opacity-80"
-          />
+        {/* 页面装饰 SVG 插图 */}
+        <div className="mb-10">
+          <ResearchIllustration />
         </div>
 
         {/* 研究方向 */}
