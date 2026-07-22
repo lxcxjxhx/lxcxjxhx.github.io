@@ -1,11 +1,9 @@
 import { Link } from "react-router-dom";
 import Container from "../layout/Container";
 import { aboutInfo } from "../../data/about";
-import HeroIllustration from "../illustrations/HeroIllustration";
 
 export default function HeroSection() {
-  const { name, bio } = aboutInfo;
-  const displayName = name === "Hyacinth-of-Security" ? "钱佳宏" : name;
+  const { bio } = aboutInfo;
 
   return (
     <section className="relative min-h-[75vh] flex items-center justify-center overflow-hidden">
@@ -14,7 +12,7 @@ export default function HeroSection() {
           {/* Left: Text content */}
           <div className="text-center md:text-left">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
-              <span className="gradient-text-hero">{displayName}</span>
+              <span className="gradient-text-hero">HOS</span>
             </h1>
             <p className="text-lg md:text-xl text-[var(--text-muted)] mb-3 max-w-lg">
               AI · 安全 · 系统底层
@@ -40,9 +38,13 @@ export default function HeroSection() {
             </div>
           </div>
 
-          {/* Right: SVG 动态插图 (hidden on mobile) */}
+          {/* Right: AI 图画插图 (hidden on mobile) */}
           <div className="hidden md:block relative">
-            <HeroIllustration />
+            <img
+              src="/illustrations/hero-decoration.jpg"
+              alt="HOS — 风信子电路图"
+              className="w-full rounded-2xl opacity-90"
+            />
           </div>
         </div>
       </Container>

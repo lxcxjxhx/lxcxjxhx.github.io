@@ -51,6 +51,22 @@ export const githubProfile: GitHubProfile = {
 
 export const githubRepos: GitHubRepo[] = [
   {
+    "id": 980504857,
+    "name": "HOS-Qian-jia-hong-resume",
+    "fullName": "lxcxjxhx/HOS-Qian-jia-hong-resume",
+    "description": "RES-PJEXP is a structured digital portfolio showcasing the technical achievements, certifications, and project work of  Qian Jiahong, with a focus on Cybersecurity, Artificial Intelligence, and Healthcare Technology.",
+    "htmlUrl": "https://github.com/lxcxjxhx/HOS-Qian-jia-hong-resume",
+    "homepage": "",
+    "language": "HTML",
+    "stargazersCount": 2,
+    "forksCount": 0,
+    "openIssuesCount": 0,
+    "topics": [],
+    "pushedAt": "2026-07-22T02:21:53Z",
+    "createdAt": "2025-05-09T08:36:26Z",
+    "license": null
+  },
+  {
     "id": 1305764793,
     "name": "academic-resume",
     "fullName": "lxcxjxhx/academic-resume",
@@ -131,22 +147,6 @@ export const githubRepos: GitHubRepo[] = [
     "license": "NOASSERTION"
   },
   {
-    "id": 980504857,
-    "name": "HOS-Qian-jia-hong-resume",
-    "fullName": "lxcxjxhx/HOS-Qian-jia-hong-resume",
-    "description": "RES-PJEXP is a structured digital portfolio showcasing the technical achievements, certifications, and project work of  Qian Jiahong, with a focus on Cybersecurity, Artificial Intelligence, and Healthcare Technology.",
-    "htmlUrl": "https://github.com/lxcxjxhx/HOS-Qian-jia-hong-resume",
-    "homepage": "",
-    "language": "HTML",
-    "stargazersCount": 2,
-    "forksCount": 0,
-    "openIssuesCount": 0,
-    "topics": [],
-    "pushedAt": "2026-07-21T02:23:57Z",
-    "createdAt": "2025-05-09T08:36:26Z",
-    "license": null
-  },
-  {
     "id": 987559727,
     "name": "HOS-MATCH-PROJECT",
     "fullName": "lxcxjxhx/HOS-MATCH-PROJECT",
@@ -197,6 +197,16 @@ export const githubRepos: GitHubRepo[] = [
 ];
 
 export const githubEvents: GitHubEvent[] = [
+  {
+    "type": "PushEvent",
+    "repo": "lxcxjxhx/lxcxjxhx.github.io",
+    "createdAt": "2026-07-22T01:53:18Z",
+    "payload": {
+      "action": null,
+      "ref": "refs/heads/main",
+      "ref_type": null
+    }
+  },
   {
     "type": "PushEvent",
     "repo": "lxcxjxhx/lxcxjxhx.github.io",
@@ -1358,21 +1368,6 @@ export const githubEvents: GitHubEvent[] = [
       "action": null,
       "ref": "master",
       "ref_type": "branch"
-    }
-  },
-  {
-    "type": "PullRequestEvent",
-    "repo": "microsoft/PyRIT",
-    "createdAt": "2026-07-19T13:23:21Z",
-    "payload": {
-      "action": "opened",
-      "ref": null,
-      "ref_type": null,
-      "pulls": {
-        "number": 2233,
-        "title": "",
-        "html_url": ""
-      }
     }
   }
 ];

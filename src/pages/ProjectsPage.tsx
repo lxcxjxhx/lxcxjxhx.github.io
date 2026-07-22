@@ -5,7 +5,6 @@ import SectionTitle from "../components/ui/SectionTitle";
 import Card from "../components/ui/Card";
 import AnimatedNumber from "../components/ui/AnimatedNumber";
 import Container from "../components/layout/Container";
-import ProjectsIllustration from "../components/illustrations/ProjectsIllustration";
 
 export default function ProjectsPage() {
   const projects = getProjects();
@@ -45,9 +44,13 @@ export default function ProjectsPage() {
           align="left"
         />
 
-        {/* 页面装饰 SVG 插图 */}
+        {/* 页面装饰 AI 图画 */}
         <div className="mb-10">
-          <ProjectsIllustration />
+          <img
+            src="/illustrations/projects-header.jpg"
+            alt="Git 仓库分支可视化"
+            className="w-full h-48 md:h-64 object-cover opacity-80 rounded-2xl"
+          />
         </div>
 
         <div className="flex flex-wrap justify-center gap-8 mb-12">

@@ -6,7 +6,6 @@ import {
 } from "../data/research";
 import SectionTitle from "../components/ui/SectionTitle";
 import Container from "../components/layout/Container";
-import ResearchIllustration from "../components/illustrations/ResearchIllustration";
 
 export default function ResearchPage() {
   return (
@@ -18,9 +17,13 @@ export default function ResearchPage() {
           align="left"
         />
 
-        {/* 页面装饰 SVG 插图 */}
+        {/* 页面装饰 AI 图画 */}
         <div className="mb-10">
-          <ResearchIllustration />
+          <img
+            src="/illustrations/research-header.jpg"
+            alt="知识图谱可视化"
+            className="w-full h-48 md:h-64 object-cover opacity-80 rounded-2xl"
+          />
         </div>
 
         {/* 研究方向 */}
