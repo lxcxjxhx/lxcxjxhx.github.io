@@ -103,7 +103,7 @@ const fmtTime = (t: unknown): string => (typeof t === "string" ? t.replace("T", 
 function describeSource(key: string, s: ExtSource): string {
   switch (key) {
     case "github":
-      return `${fmtNum(s.followers)} 粉丝 · ${fmtNum(s.publicRepos)} 公开仓库 · 加入于 ${fmtNum(s.createdAt).slice(0, 10)}`;
+      return `${fmtNum(s.followers)} 粉丝 · ${fmtNum(s.publicRepos)} 仓库 · ${fmtNum(s.totalStars)} ⭐ · ${fmtNum(s.totalForks)} 复刻`;
     case "hf":
       return `${fmtNum(s.models)} 个模型`;
     case "pypi":
@@ -113,6 +113,52 @@ function describeSource(key: string, s: ExtSource): string {
     default:
       return "已同步";
   }
+}
+
+// GitHub 观测面板（多维度数值）
+function GithubPanel({ s }: { s: ExtSource }) {
+  const langs = Array.isArray(s.topLanguages) ? (s.topLanguages as string[]) : [];
+  const top = s.topRepo as { name?: string; stars?: number } | undefined;
+  const items: { k: string; v: unknown }[] = [
+    { k: "Followers", v: s.followers },
+    { k: "Following", v: s.following },
+    { k: "Repos", v: s.publicRepos },
+    { k: "Gists", v: s.publicGists },
+    { k: "总 Star", v: s.totalStars },
+    { k: "总 Fork", v: s.totalForks },
+    { k: "账号", v: typeof s.accountYears === "number" ? `${s.accountYears} 年` : undefined },
+  ];
+  return (
+    <div className="gh-panel">
+      <div className="gh-stats">
+        {items.map((it) => (
+          <div className="gh-stat" key={it.k}>
+            <b className="mono">{fmtNum(it.v)}</b>
+            <span>{it.k}</span>
+          </div>
+        ))}
+      </div>
+      {langs.length > 0 && (
+        <div className="gh-langs">
+          <span className="gh-langs-label mono">top languages</span>
+          {langs.map((l) => (
+            <span className="gh-lang mono" key={l}>
+              {l}
+            </span>
+          ))}
+        </div>
+      )}
+      {top && (
+        <p className="gh-top mono">
+          ★ 最高星仓库：
+          <a href={`https://github.com/lxcxjxhx/${top.name}`} target="_blank" rel="noreferrer">
+            {top.name}
+          </a>
+          {typeof top.stars === "number" ? ` · ${top.stars} ⭐` : ""}
+        </p>
+      )}
+    </div>
+  );
 }
 
 // 数字滚动（缓动计数）
@@ -238,12 +284,6 @@ export default function App() {
           ))}
         </div>
       </nav>
-
-      <div className="rail" aria-hidden="true">
-        {NAV.map((n) => (
-          <a key={n.id} href={`#${n.id}`} title={n.label} />
-        ))}
-      </div>
 
       <main>
         <section id="top" className="hero">
@@ -495,6 +535,7 @@ export default function App() {
                     <p className="mono">GitHub Actions 定时抓取 → 存储 → 随部署发布 · 本次同步 {fmtTime(ext.updatedAt)}</p>
                   </div>
                 </div>
+                {ext.sources.github && <GithubPanel s={ext.sources.github} />}
                 <div className="ext-grid">
                   {extEntries.map(([key, s]) => (
                     <div className="ext-card" key={key}>
@@ -518,16 +559,36 @@ export default function App() {
       </main>
 
       <footer className="foot">
-        <p className="foot-brand">⟢ 安全风信子 · SECURITY HYACINTH</p>
-        <p>以代码为武器，在 AI 与安全的交汇处持续耕耘。</p>
-        <div className="foot-links">
-          {LINKS.map((l) => (
-            <a key={l.label} href={l.href} target="_blank" rel="noreferrer">
-              {l.label}
-            </a>
-          ))}
+        <div className="foot-grid">
+          <div className="foot-brand-col">
+            <p className="foot-brand">⟢ 安全风信子</p>
+            <p className="foot-en mono">SECURITY HYACINTH</p>
+            <p className="foot-desc">以代码为武器，在 AI 与安全的交汇处持续耕耘。</p>
+          </div>
+          <div className="foot-col">
+            <h4>通道</h4>
+            <div className="foot-links">
+              {LINKS.map((l) => (
+                <a key={l.label} href={l.href} target="_blank" rel="noreferrer">
+                  {l.label}
+                </a>
+              ))}
+            </div>
+          </div>
+          <div className="foot-col">
+            <h4>数据</h4>
+            <ul className="foot-data mono">
+              <li>seed_db: HOS-Qian-jia-hong-resume</li>
+              <li>snapshot: {resumeSource.fetchedAt.slice(0, 10)}</li>
+              <li>sources: {extEntries.length || "static"} live</li>
+            </ul>
+          </div>
         </div>
-        <p className="foot-thanks">⭐ 感谢所有队友、导师和朋友在学习旅程中的指导与支持。</p>
+        <div className="foot-bottom mono">
+          <span>⟢ HYACINTH.SIG · v2.0</span>
+          <span>⭐ 感谢所有队友、导师与朋友的支持</span>
+          <span>built by GitHub Actions</span>
+        </div>
       </footer>
 
       <div className="termbar mono">
