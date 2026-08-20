@@ -1,6 +1,5 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import tailwindcss from "@tailwindcss/vite";
 import fs from "fs";
 import path from "path";
 import os from "os";
@@ -29,7 +28,7 @@ const esbuildResolveFixPlugin = {
 const cacheDir = path.join(os.tmpdir(), "hos-blog-vite-cache");
 
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [react()],
   build: { outDir: "dist" },
   cacheDir,
   optimizeDeps: {

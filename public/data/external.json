@@ -1,0 +1,56 @@
+{
+  "updatedAt": "2026-08-20T22:49:09.994Z",
+  "sources": {
+    "csdn": {
+      "latest": [
+        {
+          "title": "脑子里有“三个人“在吵架，你听谁的？——关于沟通的“Token经济学“",
+          "url": "https://blog.csdn.net/lxcxjxhx/article/details/163897508",
+          "publishedAt": "2026-08-19"
+        },
+        {
+          "title": "DeepSeek涨价没有让我失望——无意义的Vibe等于吸毒",
+          "url": "https://blog.csdn.net/lxcxjxhx/article/details/163897042",
+          "publishedAt": "2026-08-19"
+        },
+        {
+          "title": "如何在国内AI产品成本暴涨前完成技术验证——我的踩坑与收益",
+          "url": "https://blog.csdn.net/lxcxjxhx/article/details/163897028",
+          "publishedAt": "2026-08-19"
+        },
+        {
+          "title": "2026 AI 越狱生态观察：从 DAN 社区到自动化 Red Team，一场不对称的攻防战",
+          "url": "https://blog.csdn.net/lxcxjxhx/article/details/163863336",
+          "publishedAt": "2026-08-18"
+        },
+        {
+          "title": "AI Agent 开发的“三岔路口“：Workflow、Skill 还是 Framework？一个独立开发者的效率思辨",
+          "url": "https://blog.csdn.net/lxcxjxhx/article/details/163784404",
+          "publishedAt": "2026-08-15"
+        },
+        {
+          "title": "当代青年绞肉机:打比赛 / 卷绩点 / 搞副业 / 找打工 / 做开源",
+          "url": "https://blog.csdn.net/lxcxjxhx/article/details/163761789",
+          "publishedAt": "2026-08-14"
+        },
+        {
+          "title": "GitHub Actions 维护工具全景实战：11 款 CLI 从版本固定、安全审计到 AI 自愈一次讲透",
+          "url": "https://blog.csdn.net/lxcxjxhx/article/details/163699955",
+          "publishedAt": "2026-08-12"
+        },
+        {
+          "title": "别再一个 PPT 一个 PPT 地做了：我做了一个 AI 内容工业流水线 Skill",
+          "url": "https://blog.csdn.net/lxcxjxhx/article/details/163673225",
+          "publishedAt": "2026-08-11"
+        }
+      ],
+      "updatedAt": "2026-08-20T22:49:09.994Z"
+    },
+    "github": {
+      "followers": 34,
+      "publicRepos": 23,
+      "createdAt": "2023-09-06T07:19:49Z",
+      "updatedAt": "2026-08-20T22:49:09.994Z"
+    }
+  }
+}
