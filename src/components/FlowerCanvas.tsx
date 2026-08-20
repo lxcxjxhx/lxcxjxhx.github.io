@@ -1,14 +1,29 @@
 import { useEffect, useRef } from "react";
 
-// Hero 画布：一株由光绘成的"安全风信子"——茎蔓生长、花瓣如数据流绽放、花粉微粒漂浮
+interface Particle {
+  x: number;
+  y: number;
+  r: number;
+  s: number;
+  a: number;
+  vx: number;
+  vy: number;
+  life: number;
+}
+
+// Hero 画布：一株由光绘成的"安全风信子"——茎蔓生长、花瓣如数据流绽放。
+// 交互：光标左右移动花茎随之倾斜；点击花丛激起花粉迸射。
 export function FlowerCanvas() {
   const ref = useRef<HTMLCanvasElement>(null);
+  const mouse = useRef({ x: 0.5, y: 0.5 });
 
   useEffect(() => {
     const canvas = ref.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
+    // canvas 本身 pointer-events:none，事件挂在父容器（hero）上
+    const host = canvas.parentElement ?? canvas;
 
     let raf = 0;
     let w = 0;
@@ -26,13 +41,45 @@ export function FlowerCanvas() {
     resize();
     window.addEventListener("resize", resize);
 
-    const particles = Array.from({ length: 46 }, () => ({
+    const particles: Particle[] = Array.from({ length: 46 }, () => ({
       x: Math.random(),
       y: Math.random(),
       r: 0.6 + Math.random() * 1.8,
       s: 0.15 + Math.random() * 0.5,
       a: Math.random() * Math.PI * 2,
+      vx: 0,
+      vy: 0,
+      life: Infinity,
     }));
+
+    const burst = (nx: number, ny: number) => {
+      for (let i = 0; i < 14; i++) {
+        const ang = Math.random() * Math.PI * 2;
+        const sp = 0.002 + Math.random() * 0.005;
+        particles.push({
+          x: nx,
+          y: ny,
+          r: 1 + Math.random() * 1.6,
+          s: 0,
+          a: ang,
+          vx: Math.cos(ang) * sp,
+          vy: Math.sin(ang) * sp,
+          life: 90,
+        });
+      }
+    };
+
+    const onMove = (e: MouseEvent) => {
+      const rect = host.getBoundingClientRect();
+      mouse.current.x = (e.clientX - rect.left) / rect.width;
+      mouse.current.y = (e.clientY - rect.top) / rect.height;
+    };
+    const onClick = (e: MouseEvent) => {
+      const rect = host.getBoundingClientRect();
+      burst((e.clientX - rect.left) / rect.width, (e.clientY - rect.top) / rect.height);
+    };
+    host.addEventListener("mousemove", onMove);
+    host.addEventListener("click", onClick);
 
     const petal = (x: number, y: number, ang: number, len: number, wid: number, col: string, glow: number) => {
       ctx.save();
@@ -53,11 +100,12 @@ export function FlowerCanvas() {
     const draw = (t: number) => {
       ctx.clearRect(0, 0, w, h);
       const time = t / 1000;
-      const stemX = w * 0.5;
-      const stemBot = h * 0.94;
+      const stemX = w * 0.76;
+      const stemBot = h * 0.92;
       const stemTop = h * 0.3;
       const grow = Math.min(1, time / 3.2);
-      const sway = Math.sin(time * 0.6) * 6;
+      // 光标让花茎倾斜
+      const sway = Math.sin(time * 0.6) * 6 + (mouse.current.x - 0.5) * 90;
       const stemLen = (stemBot - stemTop) * grow;
 
       // 茎
@@ -96,18 +144,31 @@ export function FlowerCanvas() {
         ctx.fill();
       }
 
-      // 花粉微粒
-      for (const pt of particles) {
-        pt.y -= pt.s * 0.0016;
-        pt.x += Math.sin(time * 0.8 + pt.a) * 0.0004;
-        if (pt.y < -0.02) {
-          pt.y = 1.02;
-          pt.x = Math.random();
+      // 花粉微粒（环境漂浮 + 点击迸射）
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const pt = particles[i];
+        if (pt.life !== Infinity) {
+          pt.life--;
+          if (pt.life <= 0) {
+            particles.splice(i, 1);
+            continue;
+          }
+          pt.x += pt.vx;
+          pt.y += pt.vy;
+          pt.vy += 0.00004;
+        } else {
+          pt.y -= pt.s * 0.0016;
+          pt.x += Math.sin(time * 0.8 + pt.a) * 0.0004;
+          if (pt.y < -0.02) {
+            pt.y = 1.02;
+            pt.x = Math.random();
+          }
         }
-        const alpha = 0.25 + 0.35 * Math.sin(time * 2 + pt.a);
+        const alpha =
+          pt.life === Infinity ? 0.25 + 0.35 * Math.sin(time * 2 + pt.a) : Math.max(0, Math.min(1, pt.life / 30));
         ctx.beginPath();
         ctx.arc(pt.x * w, pt.y * h, pt.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(125, 211, 252, ${Math.max(0, alpha)})`;
+        ctx.fillStyle = `rgba(125, 211, 252, ${alpha})`;
         ctx.fill();
       }
 
@@ -118,6 +179,8 @@ export function FlowerCanvas() {
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", resize);
+      host.removeEventListener("mousemove", onMove);
+      host.removeEventListener("click", onClick);
     };
   }, []);
 
