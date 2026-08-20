@@ -64,6 +64,53 @@ async function collectCsdnLatest() {
   return { latest: items };
 }
 
+// SQLite 存储（私有数据中枢用）：latest 当前值 + history 追加历史（数据湖）
+// 通过环境变量 HOS_DB 启用；站点构建不设置则仅写 JSON。
+async function writeSqlite(sources, now) {
+  const dbPath = process.env.HOS_DB;
+  if (!dbPath) return;
+  let DatabaseSync;
+  try {
+    ({ DatabaseSync } = await import("node:sqlite"));
+  } catch {
+    console.warn("node:sqlite 不可用（需要 Node >= 23.4），跳过 SQLite 存储");
+    return;
+  }
+  fs.mkdirSync(path.dirname(dbPath), { recursive: true });
+  const db = new DatabaseSync(dbPath);
+  db.exec(`CREATE TABLE IF NOT EXISTS latest (
+    source TEXT PRIMARY KEY,
+    data TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+  );`);
+  db.exec(`CREATE TABLE IF NOT EXISTS history (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    source TEXT NOT NULL,
+    data TEXT NOT NULL,
+    collected_at TEXT NOT NULL
+  );`);
+  const readOld = db.prepare(`SELECT data FROM latest WHERE source = ?`);
+  const upsert = db.prepare(`INSERT INTO latest (source, data, updated_at) VALUES (?, ?, ?)
+    ON CONFLICT(source) DO UPDATE SET data = excluded.data, updated_at = excluded.updated_at`);
+  const insHist = db.prepare(`INSERT INTO history (source, data, collected_at) VALUES (?, ?, ?)`);
+  db.exec("BEGIN");
+  try {
+    for (const [key, src] of Object.entries(sources)) {
+      const { updatedAt, ...rest } = src;
+      const payload = JSON.stringify(rest);
+      const old = readOld.get(key);
+      upsert.run(key, payload, now);
+      if (!old || old.data !== payload) insHist.run(key, payload, now);
+    }
+    db.exec("COMMIT");
+  } catch (e) {
+    db.exec("ROLLBACK");
+    throw e;
+  }
+  db.close();
+  console.log(`ok:   sqlite -> ${dbPath}`);
+}
+
 async function main() {
   const old = fs.existsSync(OUT) ? JSON.parse(fs.readFileSync(OUT, "utf-8")) : {};
   const sources = old.sources || {};
@@ -96,6 +143,8 @@ async function main() {
   fs.mkdirSync(path.dirname(OUT), { recursive: true });
   fs.writeFileSync(OUT, JSON.stringify(data, null, 2) + "\n", "utf-8");
   console.log(`written -> ${OUT}`);
+
+  await writeSqlite(sources, now);
 }
 
 main().catch((e) => {
