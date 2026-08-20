@@ -10,12 +10,12 @@ export const BRAND = {
 };
 
 export const STATS = [
-  { label: "CSDN 原创博文", value: "1,467", unit: "篇" },
-  { label: "已合并 Pull Request", value: "161", unit: "个" },
-  { label: "PyPI 开源包", value: "7", unit: "个" },
-  { label: "年度 GitHub 贡献", value: "1,686", unit: "次" },
-  { label: "博客收藏", value: "19,544", unit: "次" },
-  { label: "博客粉丝", value: "3,312", unit: "人" },
+  { label: "CSDN 原创博文", value: "1,467", unit: "篇", max: 2000 },
+  { label: "已合并 Pull Request", value: "161", unit: "个", max: 300 },
+  { label: "PyPI 开源包", value: "7", unit: "个", max: 12 },
+  { label: "年度 GitHub 贡献", value: "1,686", unit: "次", max: 2000 },
+  { label: "博客收藏", value: "19,544", unit: "次", max: 30000 },
+  { label: "博客粉丝", value: "3,312", unit: "人", max: 5000 },
 ];
 
 export const LINKS = [

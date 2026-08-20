@@ -1147,3 +1147,243 @@ main {
     bottom: 122px;
   }
 }
+
+/* ══ 海报式观测台（覆写式增强 v3）══ */
+
+.hero-title-wrap {
+  position: relative;
+  transform: rotate(-2deg);
+  margin: 4px 0 0;
+}
+.title-watermark {
+  position: absolute;
+  top: -0.44em;
+  left: -0.06em;
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: clamp(92px, 15vw, 200px);
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(139, 92, 246, 0.3);
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+}
+.hero-title {
+  position: relative;
+  z-index: 1;
+  font-size: clamp(58px, 9.5vw, 126px);
+  letter-spacing: 5px;
+  line-height: 1.02;
+  white-space: nowrap;
+}
+.hero-en {
+  margin-top: 14px;
+}
+
+.hero-inner {
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 24px;
+}
+
+.stamp {
+  position: absolute;
+  z-index: 3;
+  font-size: 10.5px;
+  letter-spacing: 3px;
+  color: rgba(139, 163, 196, 0.5);
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  padding: 4px 12px;
+  border-radius: 3px;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.stamp-tl {
+  top: 82px;
+  left: clamp(16px, 4vw, 44px);
+  transform: rotate(-4deg);
+}
+.stamp-br {
+  bottom: 150px;
+  right: clamp(16px, 4vw, 44px);
+  transform: rotate(3deg);
+}
+
+/* 声呐雷达 */
+.hero-instruments {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+.radar {
+  position: relative;
+  width: 186px;
+  height: 186px;
+  border-radius: 50%;
+  border: 1px solid rgba(45, 212, 191, 0.3);
+  background: radial-gradient(circle, rgba(45, 212, 191, 0.07), transparent 72%);
+}
+.radar-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(139, 92, 246, 0.24);
+}
+.radar-ring.r1 {
+  inset: 25%;
+}
+.radar-ring.r2 {
+  inset: 48%;
+}
+.radar-sweep {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, rgba(45, 212, 191, 0.4), transparent 62deg);
+  animation: sweep 3.4s linear infinite;
+}
+@keyframes sweep {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.radar-core {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+.radar-core b {
+  font-size: 36px;
+  color: var(--cyan);
+}
+.radar-core span {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--dim);
+}
+
+/* 竖向信号仪表 */
+.meters {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+}
+.meter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  flex: 1;
+}
+.meter-value {
+  font-size: 12.5px;
+  color: var(--cyan);
+  white-space: nowrap;
+}
+.meter-value i {
+  font-style: normal;
+  font-size: 9px;
+  color: var(--dim);
+  margin-left: 1px;
+}
+.meter-bar {
+  width: 13px;
+  height: 118px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+.meter-bar i {
+  display: block;
+  width: 100%;
+  background: linear-gradient(to top, rgba(45, 212, 191, 0.85), rgba(139, 92, 246, 0.85));
+  box-shadow: 0 0 12px rgba(45, 212, 191, 0.5);
+  transition: height 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.meter-label {
+  font-size: 10px;
+  color: var(--dim);
+  text-align: center;
+  max-width: 74px;
+  line-height: 1.4;
+}
+
+.hero-hint {
+  margin-top: 0;
+}
+
+/* 扫描线（上下滑过的亮线） */
+.hero::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -2px;
+  height: 1px;
+  z-index: 1;
+  background: linear-gradient(90deg, transparent, rgba(45, 212, 191, 0.55), transparent);
+  animation: scanmove 7s linear infinite;
+  pointer-events: none;
+}
+@keyframes scanmove {
+  0% {
+    top: -2px;
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}
+
+/* 观测台响应式 */
+@media (max-width: 980px) {
+  .hero-inner {
+    grid-template-columns: 1fr;
+  }
+  .hero-instruments {
+    flex-direction: row;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .meters {
+    flex: 1;
+    min-width: 300px;
+  }
+  .stamp-br {
+    display: none;
+  }
+}
+@media (max-width: 620px) {
+  .radar {
+    width: 120px;
+    height: 120px;
+  }
+  .radar-core b {
+    font-size: 26px;
+  }
+  .meter-bar {
+    height: 84px;
+  }
+  .hero-title {
+    white-space: normal;
+  }
+}

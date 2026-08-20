@@ -132,15 +132,25 @@ function useCountUp(target: number, duration = 1400): string {
   return val.toLocaleString("en-US");
 }
 
-function StatCard({ label, value, unit }: { label: string; value: string; unit: string }) {
+// SOC 仪表：竖向信号柱 + 数字滚动
+function Meter({ label, value, unit, max }: { label: string; value: string; unit: string; max: number }) {
   const target = Number(value.replace(/,/g, "")) || 0;
+  const pct = Math.max(8, Math.min(100, Math.round((target / max) * 100)));
+  const [on, setOn] = useState(false);
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setOn(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
   return (
-    <div className="stat">
-      <b>
+    <div className="meter">
+      <div className="meter-value mono">
         {useCountUp(target)}
         <i>{unit}</i>
-      </b>
-      <span>{label}</span>
+      </div>
+      <div className="meter-bar">
+        <i style={{ height: on ? `${pct}%` : "0%" }} />
+      </div>
+      <span className="meter-label">{label}</span>
     </div>
   );
 }
@@ -239,11 +249,18 @@ export default function App() {
         <section id="top" className="hero">
           <FlowerCanvas />
           <div className="hero-overlay" aria-hidden="true" />
+          <div className="stamp stamp-tl mono">TOP SECRET // 观测站 01</div>
+          <div className="stamp stamp-br mono">HYACINTH.SIG · v2.0 · SEC×AI</div>
           <div className="hero-inner">
             <div className="hero-left">
               <p className="hero-kicker">⟡ 数字花圃 · 观测站 01 / 风信子的花语：重生的爱</p>
-              <h1 className="hero-title">安全风信子</h1>
-              <p className="hero-en">SECURITY HYACINTH</p>
+              <div className="hero-title-wrap">
+                <span className="title-watermark" aria-hidden="true">
+                  风信子
+                </span>
+                <h1 className="hero-title">安全风信子</h1>
+              </div>
+              <p className="hero-en">SECURITY HYACINTH — SIGNAL ANALYZER</p>
               <p className="hero-role">{BRAND.role}</p>
               <p className="hero-tagline">{BRAND.tagline}</p>
               <div className="hero-cta">
@@ -257,19 +274,23 @@ export default function App() {
                   联系
                 </a>
               </div>
-              <div className="hero-stats">
+            </div>
+            <div className="hero-instruments">
+              <div className="radar" aria-hidden="true">
+                <div className="radar-ring r1" />
+                <div className="radar-ring r2" />
+                <div className="radar-sweep" />
+                <div className="radar-core">
+                  <b className="mono">{extEntries.length || "…"}</b>
+                  <span>LIVE SOURCES</span>
+                </div>
+              </div>
+              <div className="meters">
                 {STATS.map((s) => (
-                  <StatCard key={s.label} label={s.label} value={s.value} unit={s.unit} />
+                  <Meter key={s.label} label={s.label} value={s.value} unit={s.unit} max={s.max} />
                 ))}
               </div>
-            </div>
-            <div className="hero-right" aria-hidden="true">
-              <div className="hero-rings">
-                <i />
-                <i />
-                <i />
-              </div>
-              <p className="hero-hint mono">⇆ 移动光标 · 花茎随你倾斜 · 点击花丛激起花粉</p>
+              <p className="hero-hint mono">⇆ 光标倾斜花茎 · 点击激起花粉</p>
             </div>
           </div>
           <div className="hero-console">
