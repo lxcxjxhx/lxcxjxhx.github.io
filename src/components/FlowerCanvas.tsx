@@ -11,8 +11,8 @@ interface Particle {
   life: number;
 }
 
-// Hero 画布：一株由光绘成的"安全风信子"——茎蔓生长、花瓣如数据流绽放。
-// 交互：光标左右移动花茎随之倾斜；点击花丛激起花粉迸射。
+// Hero 画布：一朵由光绘成的"安全风信子"——无茎、放射状绽放，花瓣如数据流。
+// 交互：光标左右轻移花心，点击激起花粉迸射。
 export function FlowerCanvas() {
   const ref = useRef<HTMLCanvasElement>(null);
   const mouse = useRef({ x: 0.5, y: 0.5 });
@@ -22,7 +22,6 @@ export function FlowerCanvas() {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    // canvas 本身 pointer-events:none，事件挂在父容器（hero）上
     const host = canvas.parentElement ?? canvas;
 
     let raf = 0;
@@ -41,7 +40,7 @@ export function FlowerCanvas() {
     resize();
     window.addEventListener("resize", resize);
 
-    const particles: Particle[] = Array.from({ length: 46 }, () => ({
+    const particles: Particle[] = Array.from({ length: 40 }, () => ({
       x: Math.random(),
       y: Math.random(),
       r: 0.6 + Math.random() * 1.8,
@@ -53,13 +52,13 @@ export function FlowerCanvas() {
     }));
 
     const burst = (nx: number, ny: number) => {
-      for (let i = 0; i < 14; i++) {
+      for (let i = 0; i < 16; i++) {
         const ang = Math.random() * Math.PI * 2;
-        const sp = 0.002 + Math.random() * 0.005;
+        const sp = 0.002 + Math.random() * 0.006;
         particles.push({
           x: nx,
           y: ny,
-          r: 1 + Math.random() * 1.6,
+          r: 1 + Math.random() * 1.8,
           s: 0,
           a: ang,
           vx: Math.cos(ang) * sp,
@@ -81,14 +80,15 @@ export function FlowerCanvas() {
     host.addEventListener("mousemove", onMove);
     host.addEventListener("click", onClick);
 
+    // 放射状花瓣（指向 +x 方向，旋转后朝外）
     const petal = (x: number, y: number, ang: number, len: number, wid: number, col: string, glow: number) => {
       ctx.save();
       ctx.translate(x, y);
       ctx.rotate(ang);
       ctx.beginPath();
       ctx.moveTo(0, 0);
-      ctx.bezierCurveTo(wid * 0.5, -len * 0.35, wid * 0.45, -len * 0.8, 0, -len);
-      ctx.bezierCurveTo(-wid * 0.45, -len * 0.8, -wid * 0.5, -len * 0.35, 0, 0);
+      ctx.bezierCurveTo(len * 0.34, wid * 0.5, len * 0.8, wid * 0.45, len, 0);
+      ctx.bezierCurveTo(len * 0.8, -wid * 0.45, len * 0.34, -wid * 0.5, 0, 0);
       ctx.shadowColor = col;
       ctx.shadowBlur = glow;
       ctx.fillStyle = col;
@@ -100,49 +100,44 @@ export function FlowerCanvas() {
     const draw = (t: number) => {
       ctx.clearRect(0, 0, w, h);
       const time = t / 1000;
-      const stemX = w * 0.6;
-      const stemBot = h * 0.92;
-      const stemTop = h * 0.3;
-      const grow = Math.min(1, time / 3.2);
-      // 光标让花茎倾斜
-      const sway = Math.sin(time * 0.6) * 6 + (mouse.current.x - 0.5) * 90;
-      const stemLen = (stemBot - stemTop) * grow;
+      const cx = w * 0.6;
+      const cy = h * 0.46;
+      const sway = (mouse.current.x - 0.5) * 30;
+      const grow = Math.min(1, time / 2.6);
 
-      // 茎
+      // 光晕
+      const halo = ctx.createRadialGradient(cx + sway, cy, 0, cx + sway, cy, 130 * grow);
+      halo.addColorStop(0, "rgba(139, 92, 246, 0.14)");
+      halo.addColorStop(1, "rgba(139, 92, 246, 0)");
+      ctx.fillStyle = halo;
       ctx.beginPath();
-      ctx.moveTo(stemX, stemBot);
-      ctx.quadraticCurveTo(stemX + sway * 0.4, stemBot - stemLen * 0.5, stemX + sway, stemTop + (stemBot - stemTop) * (1 - grow));
-      ctx.strokeStyle = "rgba(94, 234, 212, 0.45)";
-      ctx.lineWidth = 2;
-      ctx.stroke();
+      ctx.arc(cx + sway, cy, 130 * grow, 0, Math.PI * 2);
+      ctx.fill();
 
-      // 花簇：自下而上依次绽放
-      const clusters = 7;
-      for (let c = 0; c < clusters; c++) {
-        const p = c / (clusters - 1);
-        const cy = stemBot - stemLen * (0.12 + p * 0.82);
-        const bloom = Math.max(0, Math.min(1, (time - 0.5 - p * 0.45) / 0.9));
-        if (bloom <= 0) continue;
-        const cx = stemX + sway * p * 0.9;
-        const n = 6;
-        const baseAng = Math.sin(time * 0.5 + c) * 0.18;
-        for (let j = 0; j < n; j++) {
-          const ang = (Math.PI * 2 * j) / n + baseAng + (1 - bloom) * Math.PI;
-          const shimmer = 1 + 0.05 * Math.sin(time * 1.6 + j * 1.3 + c);
-          const len = (11 + 6 * Math.sin(c * 2.1 + j)) * (0.5 + bloom * 0.5) * (1 - p * 0.15) * shimmer;
-          const wid = len * 0.34;
-          const col = c % 2 === 0 ? "rgba(45, 212, 191, 0.72)" : "rgba(139, 92, 246, 0.72)";
-          petal(cx, cy, ang, len, wid, col, 10);
+      // 两圈放射花瓣：内圈 6 片紫、外圈 9 片青
+      const rings = [
+        { n: 6, base: 30, w: 0.34, col: "rgba(139, 92, 246, 0.75)", off: 0.0 },
+        { n: 9, base: 52, w: 0.28, col: "rgba(45, 212, 191, 0.72)", off: 0.35 },
+      ];
+      for (const ring of rings) {
+        for (let j = 0; j < ring.n; j++) {
+          const ang = (Math.PI * 2 * j) / ring.n + ring.off + Math.sin(time * 0.4 + j) * 0.06;
+          const bloom = Math.max(0, Math.min(1, (time - 0.4 - ring.off - j * 0.05) / 0.9));
+          if (bloom <= 0) continue;
+          const shimmer = 1 + 0.05 * Math.sin(time * 1.7 + j * 1.4);
+          const len = ring.base * (0.4 + bloom * 0.6) * shimmer;
+          petal(cx + sway, cy, ang, len, len * ring.w, ring.col, 12);
         }
-        // 花心微光
-        const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, 16);
-        g.addColorStop(0, "rgba(251, 191, 36, 0.32)");
-        g.addColorStop(1, "rgba(251, 191, 36, 0)");
-        ctx.fillStyle = g;
-        ctx.beginPath();
-        ctx.arc(cx, cy, 16, 0, Math.PI * 2);
-        ctx.fill();
       }
+
+      // 花心
+      const g = ctx.createRadialGradient(cx + sway, cy, 0, cx + sway, cy, 20);
+      g.addColorStop(0, "rgba(251, 191, 36, 0.5)");
+      g.addColorStop(1, "rgba(251, 191, 36, 0)");
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(cx + sway, cy, 20, 0, Math.PI * 2);
+      ctx.fill();
 
       // 花粉微粒（环境漂浮 + 点击迸射）
       for (let i = particles.length - 1; i >= 0; i--) {
