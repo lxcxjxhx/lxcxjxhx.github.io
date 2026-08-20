@@ -100,7 +100,7 @@ export function FlowerCanvas() {
     const draw = (t: number) => {
       ctx.clearRect(0, 0, w, h);
       const time = t / 1000;
-      const stemX = w * 0.76;
+      const stemX = w * 0.6;
       const stemBot = h * 0.92;
       const stemTop = h * 0.3;
       const grow = Math.min(1, time / 3.2);
