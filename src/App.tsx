@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { markdown as resumeMd, source as resumeSource } from "./data/readme";
 import { markdown as prMd } from "./data/pr_readme";
 import { ACHIEVEMENTS, BRAND, LINKS, PROJECTS, STATS } from "./data/static";
@@ -115,6 +115,36 @@ function describeSource(key: string, s: ExtSource): string {
   }
 }
 
+// 数字滚动（缓动计数）
+function useCountUp(target: number, duration = 1400): string {
+  const [val, setVal] = useState(0);
+  useEffect(() => {
+    let raf = 0;
+    const t0 = performance.now();
+    const tick = (t: number) => {
+      const p = Math.min(1, (t - t0) / duration);
+      setVal(Math.round(target * (1 - Math.pow(1 - p, 3))));
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [target, duration]);
+  return val.toLocaleString("en-US");
+}
+
+function StatCard({ label, value, unit }: { label: string; value: string; unit: string }) {
+  const target = Number(value.replace(/,/g, "")) || 0;
+  return (
+    <div className="stat">
+      <b>
+        {useCountUp(target)}
+        <i>{unit}</i>
+      </b>
+      <span>{label}</span>
+    </div>
+  );
+}
+
 // 从原始 README 中截取某个 ## 章节（跳过标题行，直到下一个 ## ）
 function sliceSection(md: string, title: string): string {
   const lines = md.split("\n");
@@ -159,7 +189,7 @@ function Section({ id, no, title, sub, children }: { id: string; no: string; tit
       <header className="sec-head">
         <span className="sec-no">{no}</span>
         <h2>{title}</h2>
-        <span className="sec-sub">{sub}</span>
+        <span className="sec-sub">$ ls garden/{id} · {sub}</span>
       </header>
       <div className="sec-body">{children}</div>
     </section>
@@ -177,6 +207,12 @@ export default function App() {
   const ext = useExternal();
   const latestPosts = (ext?.sources?.csdn?.latest as unknown as LatestPost[] | undefined) ?? [];
   const extEntries = ext ? Object.entries(ext.sources) : [];
+  const tickerItems = useMemo(() => {
+    const items: { label: string; href?: string }[] = [];
+    for (const p of latestPosts.slice(0, 6)) items.push({ label: p.title, href: p.url });
+    for (const s of STATS) items.push({ label: `${s.label} · ${s.value}${s.unit}` });
+    return items;
+  }, [latestPosts]);
 
   return (
     <div className="site">
@@ -202,33 +238,70 @@ export default function App() {
       <main>
         <section id="top" className="hero">
           <FlowerCanvas />
+          <div className="hero-overlay" aria-hidden="true" />
           <div className="hero-inner">
-            <p className="hero-kicker">⟡ 数字花圃 · 观测站 01 / 风信子的花语：重生的爱</p>
-            <h1 className="hero-title">安全风信子</h1>
-            <p className="hero-en">SECURITY HYACINTH</p>
-            <p className="hero-role">{BRAND.role}</p>
-            <p className="hero-tagline">{BRAND.tagline}</p>
-            <div className="hero-cta">
-              <a className="btn btn-primary" href={LINKS[0].href} target="_blank" rel="noreferrer">
-                阅读博客 ↗
-              </a>
-              <a className="btn btn-ghost" href={LINKS[1].href} target="_blank" rel="noreferrer">
-                GitHub
-              </a>
-              <a className="btn btn-ghost" href={`mailto:${BRAND.email}`}>
-                联系
-              </a>
+            <div className="hero-left">
+              <p className="hero-kicker">⟡ 数字花圃 · 观测站 01 / 风信子的花语：重生的爱</p>
+              <h1 className="hero-title">安全风信子</h1>
+              <p className="hero-en">SECURITY HYACINTH</p>
+              <p className="hero-role">{BRAND.role}</p>
+              <p className="hero-tagline">{BRAND.tagline}</p>
+              <div className="hero-cta">
+                <a className="btn btn-primary" href={LINKS[0].href} target="_blank" rel="noreferrer">
+                  阅读博客 ↗
+                </a>
+                <a className="btn btn-ghost" href={LINKS[1].href} target="_blank" rel="noreferrer">
+                  GitHub
+                </a>
+                <a className="btn btn-ghost" href={`mailto:${BRAND.email}`}>
+                  联系
+                </a>
+              </div>
+              <div className="hero-stats">
+                {STATS.map((s) => (
+                  <StatCard key={s.label} label={s.label} value={s.value} unit={s.unit} />
+                ))}
+              </div>
             </div>
-            <div className="hero-stats">
-              {STATS.map((s) => (
-                <div className="stat" key={s.label}>
-                  <b>
-                    {s.value}
-                    <i>{s.unit}</i>
-                  </b>
-                  <span>{s.label}</span>
-                </div>
-              ))}
+            <div className="hero-right" aria-hidden="true">
+              <div className="hero-rings">
+                <i />
+                <i />
+                <i />
+              </div>
+              <p className="hero-hint mono">⇆ 移动光标 · 花茎随你倾斜 · 点击花丛激起花粉</p>
+            </div>
+          </div>
+          <div className="hero-console">
+            <div className="console-lines mono">
+              <p>⟢ hyacinth_garden v2.0 — boot sequence</p>
+              <p>
+                &gt; seed_db: HOS-Qian-jia-hong-resume/main
+                <span className={live.ok ? "t-ok" : "t-off"}> ● {live.ok ? "connected" : "snapshot"}</span>
+              </p>
+              <p>
+                &gt; sources: {extEntries.map((e) => e[0]).join(" / ") || "static"}
+                <span className={ext ? "t-ok" : "t-off"}> {ext ? `${extEntries.length} live` : "fallback"}</span>
+              </p>
+              <p>
+                &gt; data: {ext ? ext.updatedAt.slice(0, 10) : resumeSource.fetchedAt.slice(0, 10)} · deploy: GitHub
+                Actions
+              </p>
+            </div>
+            <div className="ticker">
+              <div className="ticker-track">
+                {[...tickerItems, ...tickerItems].map((it, i) =>
+                  it.href ? (
+                    <a key={i} className="ticker-item" href={it.href} target="_blank" rel="noreferrer">
+                      <span className="ticker-sep">⟡</span> {it.label}
+                    </a>
+                  ) : (
+                    <span key={i} className="ticker-item">
+                      <span className="ticker-sep">⟡</span> {it.label}
+                    </span>
+                  )
+                )}
+              </div>
             </div>
           </div>
           <a className="hero-scroll" href="#about">

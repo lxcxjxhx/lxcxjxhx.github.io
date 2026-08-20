@@ -64,11 +64,22 @@ async function collectCsdnLatest() {
   return { latest: items };
 }
 
+// ── 数据域映射（文件管理约定）──────────────────────────────────
+// 每个数据源归属一个"数据域"（domain），同域共用一个 SQLite 库文件：
+//   <HOS_DB_DIR>/<domain>.db
+// 新增数据源时在此登记 domain —— 新域自动建库并登记到 manifest.json 台账。
+const SOURCE_DB = {
+  github: "external",
+  hf: "external",
+  pypi: "external",
+  csdn: "external",
+};
+
 // SQLite 存储（私有数据中枢用）：latest 当前值 + history 追加历史（数据湖）
-// 通过环境变量 HOS_DB 启用；站点构建不设置则仅写 JSON。
+// 通过环境变量 HOS_DB_DIR 启用（目录，如 data/db）；站点构建不设置则仅写 JSON。
 async function writeSqlite(sources, now) {
-  const dbPath = process.env.HOS_DB;
-  if (!dbPath) return;
+  const dir = process.env.HOS_DB_DIR;
+  if (!dir) return;
   let DatabaseSync;
   try {
     ({ DatabaseSync } = await import("node:sqlite"));
@@ -76,39 +87,79 @@ async function writeSqlite(sources, now) {
     console.warn("node:sqlite 不可用（需要 Node >= 23.4），跳过 SQLite 存储");
     return;
   }
-  fs.mkdirSync(path.dirname(dbPath), { recursive: true });
-  const db = new DatabaseSync(dbPath);
-  db.exec(`CREATE TABLE IF NOT EXISTS latest (
-    source TEXT PRIMARY KEY,
-    data TEXT NOT NULL,
-    updated_at TEXT NOT NULL
-  );`);
-  db.exec(`CREATE TABLE IF NOT EXISTS history (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    source TEXT NOT NULL,
-    data TEXT NOT NULL,
-    collected_at TEXT NOT NULL
-  );`);
-  const readOld = db.prepare(`SELECT data FROM latest WHERE source = ?`);
-  const upsert = db.prepare(`INSERT INTO latest (source, data, updated_at) VALUES (?, ?, ?)
-    ON CONFLICT(source) DO UPDATE SET data = excluded.data, updated_at = excluded.updated_at`);
-  const insHist = db.prepare(`INSERT INTO history (source, data, collected_at) VALUES (?, ?, ?)`);
-  db.exec("BEGIN");
-  try {
-    for (const [key, src] of Object.entries(sources)) {
-      const { updatedAt, ...rest } = src;
-      const payload = JSON.stringify(rest);
-      const old = readOld.get(key);
-      upsert.run(key, payload, now);
-      if (!old || old.data !== payload) insHist.run(key, payload, now);
-    }
-    db.exec("COMMIT");
-  } catch (e) {
-    db.exec("ROLLBACK");
-    throw e;
+  const dbDir = path.resolve(dir);
+  fs.mkdirSync(dbDir, { recursive: true });
+
+  // 按数据域分组
+  const byDb = {};
+  for (const [key, src] of Object.entries(sources)) {
+    const domain = SOURCE_DB[key] || "external";
+    (byDb[domain] ||= []).push([key, src]);
   }
-  db.close();
-  console.log(`ok:   sqlite -> ${dbPath}`);
+
+  // manifest.json = 数据库台账（名称/文件/来源/schema 版本/更新时间）
+  const manifestPath = path.join(path.dirname(dbDir), "manifest.json");
+  const manifest = fs.existsSync(manifestPath)
+    ? JSON.parse(fs.readFileSync(manifestPath, "utf-8"))
+    : { updatedAt: now, dbs: [] };
+
+  for (const [domain, entries] of Object.entries(byDb)) {
+    const dbFile = path.join(dbDir, `${domain}.db`);
+    const db = new DatabaseSync(dbFile);
+    db.exec(`CREATE TABLE IF NOT EXISTS meta (
+      key TEXT PRIMARY KEY,
+      value TEXT NOT NULL
+    );`);
+    db.exec(`CREATE TABLE IF NOT EXISTS latest (
+      source TEXT PRIMARY KEY,
+      data TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );`);
+    db.exec(`CREATE TABLE IF NOT EXISTS history (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      source TEXT NOT NULL,
+      data TEXT NOT NULL,
+      collected_at TEXT NOT NULL
+    );`);
+    const setMeta = db.prepare(`INSERT OR REPLACE INTO meta (key, value) VALUES (?, ?)`);
+    setMeta.run("schema_version", "1");
+    setMeta.run("created_at", now);
+    setMeta.run("description", `data domain: ${domain}`);
+    const readOld = db.prepare(`SELECT data FROM latest WHERE source = ?`);
+    const upsert = db.prepare(`INSERT INTO latest (source, data, updated_at) VALUES (?, ?, ?)
+      ON CONFLICT(source) DO UPDATE SET data = excluded.data, updated_at = excluded.updated_at`);
+    const insHist = db.prepare(`INSERT INTO history (source, data, collected_at) VALUES (?, ?, ?)`);
+    db.exec("BEGIN");
+    try {
+      for (const [key, src] of entries) {
+        const { updatedAt, ...rest } = src;
+        const payload = JSON.stringify(rest);
+        const old = readOld.get(key);
+        upsert.run(key, payload, now);
+        if (!old || old.data !== payload) insHist.run(key, payload, now);
+      }
+      db.exec("COMMIT");
+    } catch (e) {
+      db.exec("ROLLBACK");
+      throw e;
+    }
+    db.close();
+
+    // 更新台账
+    let entry = manifest.dbs.find((d) => d.id === domain);
+    if (!entry) {
+      entry = { id: domain, file: `db/${domain}.db`, sources: [], schemaVersion: 1, createdAt: now };
+      manifest.dbs.push(entry);
+    }
+    entry.updatedAt = now;
+    entry.schemaVersion = 1;
+    entry.sources = [...new Set([...entry.sources, ...entries.map(([k]) => k)])];
+    console.log(`ok:   sqlite -> ${dbFile} (domain: ${domain})`);
+  }
+
+  manifest.updatedAt = now;
+  fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + "\n", "utf-8");
+  console.log(`ok:   manifest -> ${manifestPath}`);
 }
 
 async function main() {

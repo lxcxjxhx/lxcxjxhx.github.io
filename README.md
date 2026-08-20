@@ -30,7 +30,7 @@ src/styles.css        全套设计系统
 
 - `scripts/collect-external.mjs`：逐源抓取 GitHub API / HuggingFace API / PyPI 页面 / CSDN RSS，单源容错（失败保留旧值），快照写入 `public/data/external.json`；
 - 站点运行时读取 `./data/external.json`（同源、时间戳防缓存），「数据源」章节展示各源 live 卡片，「温室」章节展示 RSS 最新博文；
-- 私有仓库 [HOS-BLOG-DATA](https://github.com/lxcxjxhx/HOS-BLOG-DATA) 是外部数据的采集与存储中枢：**data 子分支（文件级隔离，仅数据文件）+ SQLite 存储**（`latest` 当前值表 + `history` 追加历史数据湖，`node:sqlite` 零依赖），main 分支只放代码；cron 每 6 小时采集后提交到 data 子分支。后续更多数据搜集需求在此统一管理，新增数据源只需在采集脚本加一个函数（设置 `HOS_DB` 环境变量即启用 SQLite 双写）。
+- 私有仓库 [HOS-BLOG-DATA](https://github.com/lxcxjxhx/HOS-BLOG-DATA) 是外部数据的采集与存储中枢：**data 子分支（文件级隔离，仅数据文件）+ SQLite 存储**，main 分支只放代码。文件管理约定：`data/db/<数据域>.db`（一个数据域一个库，新增域自动建库）、`data/export/`（JSON 快照）、`data/archive/`（归档）、`data/manifest.json`（数据库台账，自动维护库名/来源/schema 版本/更新时间）；库内表结构统一为 `meta` + `latest` + `history`（数据湖）。cron 每 6 小时采集后提交到 data 子分支，后续更多数据搜集需求在此统一管理（设 `HOS_DB_DIR` 环境变量即启用 SQLite 双写）。
 
 ## 本地开发
 
