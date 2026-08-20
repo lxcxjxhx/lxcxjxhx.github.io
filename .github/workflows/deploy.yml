@@ -1,11 +1,15 @@
-name: Deploy to GitHub Pages
+name: Build, Sync Data & Deploy
 
 on:
   push:
     branches: [main]
+  schedule:
+    # 每 6 小时自动刷新外部数据并重新部署，保证站点数据及时同步
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -29,8 +33,18 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Fetch Resume Data (database source)
+      - name: Collect external data (GitHub/HF/PyPI/CSDN RSS)
+        run: node scripts/collect-external.mjs
+
+      - name: Fetch resume data (HOS-Qian-jia-hong-resume as database)
         run: node scripts/fetch-resume-data.mjs
+
+      - name: Commit data snapshot
+        run: |
+          git config user.name "hos-data-bot"
+          git config user.email "hos-data-bot@users.noreply.github.com"
+          git add public/data/external.json src/data/readme.ts src/data/pr_readme.ts
+          git diff --cached --quiet || git commit -m "chore: data snapshot $(date -u +%F)"
 
       - name: Build
         run: npm run build

@@ -23,6 +23,15 @@ src/styles.css        全套设计系统
 - 「数据源」章节在**运行时**直连 raw.githubusercontent 校验新鲜度，失败自动回退构建快照；
 - 修改数据源仓库后，重新构建本站即可同步内容：`npm run fetch-data && npm run build`。
 
+## 外部数据管线（GitHub Actions 自动采集 + 私有存储）
+
+站点仓库 `.github/workflows/deploy.yml` 每 6 小时（cron）+ 每次推送自动：
+`采集外部数据 → 刷新 resume 内嵌 → 构建 → 发布 GitHub Pages`，保证数据及时同步。
+
+- `scripts/collect-external.mjs`：逐源抓取 GitHub API / HuggingFace API / PyPI 页面 / CSDN RSS，单源容错（失败保留旧值），快照写入 `public/data/external.json`；
+- 站点运行时读取 `./data/external.json`（同源、时间戳防缓存），「数据源」章节展示各源 live 卡片，「温室」章节展示 RSS 最新博文；
+- 私有仓库 [HOS-BLOG-DATA](https://github.com/lxcxjxhx/HOS-BLOG-DATA) 是外部数据的采集与存储中枢（cron 每 6 小时快照存储、保留历史），后续更多数据搜集需求在此统一管理；新增数据源只需在采集脚本加一个函数。
+
 ## 本地开发
 
 ```bash

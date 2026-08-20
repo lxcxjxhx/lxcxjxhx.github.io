@@ -7,12 +7,12 @@ import { FlowerCanvas } from "./components/FlowerCanvas";
 
 const NAV = [
   { id: "top", label: "入口" },
-  { id: "about", label: "根系" },
-  { id: "projects", label: "花圃" },
-  { id: "columns", label: "温室" },
-  { id: "pr", label: "授粉" },
-  { id: "areas", label: "土壤" },
-  { id: "achievements", label: "果实" },
+  { id: "about", label: "关于" },
+  { id: "projects", label: "项目" },
+  { id: "columns", label: "专栏" },
+  { id: "pr", label: "开源" },
+  { id: "areas", label: "领域" },
+  { id: "achievements", label: "成就" },
   { id: "source", label: "数据源" },
 ];
 
@@ -57,6 +57,62 @@ function useLiveSource() {
     };
   }, []);
   return live;
+}
+
+interface ExtSource {
+  updatedAt: string;
+  [k: string]: unknown;
+}
+interface ExtData {
+  updatedAt: string;
+  sources: Record<string, ExtSource>;
+}
+interface LatestPost {
+  title: string;
+  url: string;
+  publishedAt: string;
+}
+
+// 运行时读取外部数据快照（public/data/external.json，由 GitHub Actions 定时采集）
+function useExternal() {
+  const [ext, setExt] = useState<ExtData | null>(null);
+  useEffect(() => {
+    let alive = true;
+    fetch(`./data/external.json?ts=${Date.now()}`)
+      .then((r) => {
+        if (!r.ok) throw new Error(String(r.status));
+        return r.json() as Promise<ExtData>;
+      })
+      .then((d) => {
+        if (alive) setExt(d);
+      })
+      .catch(() => {
+        /* 保持 null，站点使用静态兜底数据 */
+      });
+    return () => {
+      alive = false;
+    };
+  }, []);
+  return ext;
+}
+
+const fmtNum = (v: unknown): string => (typeof v === "number" ? v.toLocaleString("en-US") : typeof v === "string" && v ? v : "—");
+
+const fmtTime = (t: unknown): string => (typeof t === "string" ? t.replace("T", " ").slice(0, 16) + " UTC" : "—");
+
+function describeSource(key: string, s: ExtSource): string {
+  switch (key) {
+    case "github":
+      return `${fmtNum(s.followers)} 粉丝 · ${fmtNum(s.publicRepos)} 公开仓库 · 加入于 ${fmtNum(s.createdAt).slice(0, 10)}`;
+    case "hf":
+      return `${fmtNum(s.models)} 个模型`;
+    case "pypi":
+      return `${fmtNum(s.packages)} 个开源包${Array.isArray(s.names) && s.names.length ? " · " + (s.names as string[]).join(" / ") : ""}`;
+    case "csdn":
+      return `最新博文 ${Array.isArray(s.latest) ? (s.latest as LatestPost[]).length : 0} 篇已同步`;
+    default:
+      return "已同步";
+  }
 }
 
 // 从原始 README 中截取某个 ## 章节（跳过标题行，直到下一个 ## ）
@@ -118,6 +174,9 @@ export default function App() {
   const prRows = extractPrRows(prMd, 12);
   const prTotal = prMd.match(/\*\*Total Merged PRs\*\*:\s*(\d+)/)?.[1] ?? "—";
   const prProjects = prMd.match(/\*\*Projects\*\*:\s*(\d+)/)?.[1] ?? "—";
+  const ext = useExternal();
+  const latestPosts = (ext?.sources?.csdn?.latest as unknown as LatestPost[] | undefined) ?? [];
+  const extEntries = ext ? Object.entries(ext.sources) : [];
 
   return (
     <div className="site">
@@ -220,6 +279,24 @@ export default function App() {
         </Section>
 
         <Section id="columns" no="04" title="温室 · CSDN Columns" sub="12+ 系统化专栏 —— 数据实时取自仓库 README">
+          {latestPosts.length > 0 && (
+            <div className="latest">
+              <div className="latest-head">
+                <span>最新博文 · RSS 自动同步</span>
+                <a href="https://blog.csdn.net/lxcxjxhx/" target="_blank" rel="noreferrer">
+                  CSDN ↗
+                </a>
+              </div>
+              <div className="latest-list">
+                {latestPosts.slice(0, 5).map((p) => (
+                  <a className="latest-item" key={p.url} href={p.url} target="_blank" rel="noreferrer">
+                    <span className="latest-date mono">{p.publishedAt}</span>
+                    <span className="latest-title">{p.title}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
           {columnsMd ? <Markdown text={columnsMd} /> : <p className="empty">章节未找到（仓库 README 结构可能已调整）。</p>}
         </Section>
 
@@ -315,6 +392,29 @@ export default function App() {
                 </div>
               </dl>
             </div>
+            {ext && (
+              <div className="src-card">
+                <div className="src-status">
+                  <span className="dot ok" />
+                  <div>
+                    <b>外部数据 · 自动采集</b>
+                    <p className="mono">GitHub Actions 定时抓取 → 存储 → 随部署发布 · 本次同步 {fmtTime(ext.updatedAt)}</p>
+                  </div>
+                </div>
+                <div className="ext-grid">
+                  {extEntries.map(([key, s]) => (
+                    <div className="ext-card" key={key}>
+                      <div className="ext-head">
+                        <b>{key}</b>
+                        <span className="live-badge">live</span>
+                      </div>
+                      <p>{describeSource(key, s)}</p>
+                      <span className="mono ext-time">{fmtTime(s.updatedAt)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             <details className="src-preview">
               <summary>展开 · 阅读完整 README（仓库即数据库的原文预览）</summary>
               <Markdown text={live.ok && live.text ? live.text : resumeMd} />
@@ -340,6 +440,9 @@ export default function App() {
         <span>⟢ seed_db: HOS-Qian-jia-hong-resume/main</span>
         <span>snapshot: {resumeSource.fetchedAt.slice(0, 10)}</span>
         <span className={live.ok ? "t-ok" : "t-off"}>● {live.ok ? "connected" : "snapshot"}</span>
+        <span className={ext ? "t-ok" : ""}>
+          data: {ext ? `${ext.updatedAt.slice(0, 10)} · ${extEntries.length} sources` : "static"}
+        </span>
         <span>built by GitHub Actions</span>
       </div>
     </div>
