@@ -30,8 +30,37 @@ async function fetchText(url, tries = 3) {
 }
 
 async function collectGithub() {
-  const j = JSON.parse(await fetchText("https://api.github.com/users/lxcxjxhx"));
-  return { followers: j.followers, publicRepos: j.public_repos, createdAt: j.created_at };
+  const [user, repos] = await Promise.all([
+    fetchText("https://api.github.com/users/lxcxjxhx"),
+    fetchText("https://api.github.com/users/lxcxjxhx/repos?per_page=100&type=owner"),
+  ]);
+  const u = JSON.parse(user);
+  const own = JSON.parse(repos).filter((r) => !r.fork);
+  const totalStars = own.reduce((s, r) => s + (r.stargazers_count || 0), 0);
+  const totalForks = own.reduce((s, r) => s + (r.forks_count || 0), 0);
+  const langCount = {};
+  for (const r of own) {
+    const l = r.language;
+    if (l) langCount[l] = (langCount[l] || 0) + 1;
+  }
+  const topLanguages = Object.entries(langCount)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([l]) => l);
+  const top = [...own].sort((a, b) => (b.stargazers_count || 0) - (a.stargazers_count || 0))[0];
+  const accountYears = Math.max(1, Math.round((Date.now() - Date.parse(u.created_at)) / (365.25 * 24 * 3600 * 1000)));
+  return {
+    followers: u.followers,
+    following: u.following,
+    publicRepos: u.public_repos,
+    publicGists: u.public_gists,
+    totalStars,
+    totalForks,
+    topLanguages,
+    topRepo: top ? { name: top.name, stars: top.stargazers_count || 0 } : null,
+    accountYears,
+    createdAt: u.created_at,
+  };
 }
 
 async function collectHf() {
