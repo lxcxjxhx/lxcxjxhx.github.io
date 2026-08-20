@@ -243,9 +243,14 @@ function Section({ id, no, title, sub, children }: { id: string; no: string; tit
   return (
     <section id={id} className="sec" data-reveal>
       <header className="sec-head">
-        <span className="sec-no">{no}</span>
-        <h2>{title}</h2>
-        <span className="sec-sub">$ ls garden/{id} · {sub}</span>
+        <div className="sec-head-left">
+          <span className="sec-no mono">{no}</span>
+          <div className="sec-title">
+            <span className="sec-prompt mono">$ ls garden/{id}</span>
+            <h2>{title}</h2>
+          </div>
+        </div>
+        <span className="sec-sub mono">{sub}</span>
       </header>
       <div className="sec-body">{children}</div>
     </section>
@@ -372,6 +377,29 @@ export default function App() {
 
         <Section id="about" no="02" title="根系 · Root System" sub="关于我 / 联络通道">
           <div className="about-grid">
+            <div className="about-dossier">
+              <div className="dossier-head mono">PROFILE.TXT — 身份档案</div>
+              <dl className="dossier-fields mono">
+                <div>
+                  <dt>NAME</dt>
+                  <dd>{BRAND.name} · {BRAND.handle}</dd>
+                </div>
+                <div>
+                  <dt>ROLE</dt>
+                  <dd>{BRAND.role}</dd>
+                </div>
+                <div>
+                  <dt>BASE</dt>
+                  <dd>{BRAND.location}</dd>
+                </div>
+                <div>
+                  <dt>MAIL</dt>
+                  <dd>
+                    <a href={`mailto:${BRAND.email}`}>{BRAND.email}</a>
+                  </dd>
+                </div>
+              </dl>
+            </div>
             <div className="about-bio">
               <p className="about-intro">
                 信息安全 × AI 双域实践者，以代码为武器深耕大模型攻防与系统安全。
@@ -381,32 +409,33 @@ export default function App() {
               <blockquote>
                 「欢迎来到智能安全前线！这里是 AI 与信息安全交汇之地。以代码为武器，深入大模型攻防实战，破解系统漏洞。追踪前沿动态，用红蓝对抗思维，锻造智能时代的坚盾与利矛。」
               </blockquote>
-              <p className="about-meta mono">
-                📍 {BRAND.location} &nbsp;·&nbsp; ✉️ {BRAND.email}
-              </p>
-            </div>
-            <div className="about-links">
-              {LINKS.map((l) => (
-                <a className="link-card" key={l.label} href={l.href} target="_blank" rel="noreferrer">
-                  <b>{l.label}</b>
-                  <span className="mono">{l.tag}</span>
-                </a>
-              ))}
+              <div className="about-channels">
+                {LINKS.map((l) => (
+                  <a className="channel" key={l.label} href={l.href} target="_blank" rel="noreferrer">
+                    <b>{l.label}</b>
+                    <span className="mono">{l.tag}</span>
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
         </Section>
 
         <Section id="projects" no="03" title="花圃 · Cultivated Repos" sub="正在培育的开源项目">
-          <div className="proj-grid">
-            {PROJECTS.map((p) => (
-              <a className="proj-card" key={p.name} href={p.url} target="_blank" rel="noreferrer">
-                <h3>{p.name}</h3>
-                <p>{p.desc}</p>
+          <div className="proj-list">
+            {PROJECTS.map((p, i) => (
+              <a className="proj-row" key={p.name} href={p.url} target="_blank" rel="noreferrer">
+                <span className="proj-idx mono">{String(i + 1).padStart(2, "0")}</span>
+                <div className="proj-main">
+                  <h3>{p.name}</h3>
+                  <p>{p.desc}</p>
+                </div>
                 <div className="tags">
                   {p.tags.map((t) => (
                     <span key={t}>{t}</span>
                   ))}
                 </div>
+                <span className="proj-arrow">↗</span>
               </a>
             ))}
           </div>
@@ -485,7 +514,7 @@ export default function App() {
           <div className="ach-grid">
             {ACHIEVEMENTS.map((a) => (
               <div className="ach-card" key={a.title}>
-                <b className="ach-icon">{a.icon}</b>
+                <div className="ach-medal">{a.icon}</div>
                 <h3>{a.title}</h3>
                 <p>{a.items}</p>
               </div>
