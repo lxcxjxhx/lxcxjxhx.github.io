@@ -94,8 +94,11 @@ async function collectCsdnLatest() {
 }
 
 // ── 数据域映射（文件管理约定）──────────────────────────────────
-// 每个数据源归属一个"数据域"（domain），同域共用一个 SQLite 库文件：
-//   <HOS_DB_DIR>/<domain>.db
+// 每个数据源归属一个"数据域"（domain），同域共用一个数据库目录：
+//   <HOS_DB_DIR>/<domain>/<domain>.db      SQLite 库
+//   <HOS_DB_DIR>/<domain>/<domain>.json    JSON 快照
+//   <HOS_DB_DIR>/<domain>/archive/         归档目录
+//   <HOS_DB_DIR>/manifest.json             数据库台账
 // 新增数据源时在此登记 domain —— 新域自动建库并登记到 manifest.json 台账。
 const SOURCE_DB = {
   github: "external",
@@ -104,11 +107,11 @@ const SOURCE_DB = {
   csdn: "external",
 };
 
-// SQLite 存储（私有数据中枢用）：latest 当前值 + history 追加历史（数据湖）
-// 通过环境变量 HOS_DB_DIR 启用（目录，如 data/db）；站点构建不设置则仅写 JSON。
-async function writeSqlite(sources, now) {
-  const dir = process.env.HOS_DB_DIR;
-  if (!dir) return;
+// 数据中枢存储（私有数据中枢用）：每个数据域一个独立目录，内含 SQLite 库 + JSON 快照 + 归档。
+// 通过环境变量 HOS_DB_DIR 启用（指向数据根目录，如 data）；站点构建不设置则仅写 OUT JSON。
+async function writeStore(sources, now) {
+  const rootDir = process.env.HOS_DB_DIR;
+  if (!rootDir) return;
   let DatabaseSync;
   try {
     ({ DatabaseSync } = await import("node:sqlite"));
@@ -116,8 +119,8 @@ async function writeSqlite(sources, now) {
     console.warn("node:sqlite 不可用（需要 Node >= 23.4），跳过 SQLite 存储");
     return;
   }
-  const dbDir = path.resolve(dir);
-  fs.mkdirSync(dbDir, { recursive: true });
+  const root = path.resolve(rootDir);
+  fs.mkdirSync(root, { recursive: true });
 
   // 按数据域分组
   const byDb = {};
@@ -126,14 +129,19 @@ async function writeSqlite(sources, now) {
     (byDb[domain] ||= []).push([key, src]);
   }
 
-  // manifest.json = 数据库台账（名称/文件/来源/schema 版本/更新时间）
-  const manifestPath = path.join(path.dirname(dbDir), "manifest.json");
+  // manifest.json = 数据库台账（名称/目录/文件/来源/schema 版本/更新时间）
+  const manifestPath = path.join(root, "manifest.json");
   const manifest = fs.existsSync(manifestPath)
     ? JSON.parse(fs.readFileSync(manifestPath, "utf-8"))
     : { updatedAt: now, dbs: [] };
 
   for (const [domain, entries] of Object.entries(byDb)) {
-    const dbFile = path.join(dbDir, `${domain}.db`);
+    // 每个数据域一个目录：<root>/<domain>/
+    const domainDir = path.join(root, domain);
+    fs.mkdirSync(path.join(domainDir, "archive"), { recursive: true });
+
+    // SQLite 库：<domain>/<domain>.db（meta 元信息 + latest 当前值 + history 数据湖）
+    const dbFile = path.join(domainDir, `${domain}.db`);
     const db = new DatabaseSync(dbFile);
     db.exec(`CREATE TABLE IF NOT EXISTS meta (
       key TEXT PRIMARY KEY,
@@ -174,16 +182,30 @@ async function writeSqlite(sources, now) {
     }
     db.close();
 
+    // JSON 快照：<domain>/<domain>.json（站点发布格式）
+    const jsonFile = path.join(domainDir, `${domain}.json`);
+    const snapshot = { updatedAt: now, sources: {} };
+    for (const [key, src] of entries) snapshot.sources[key] = src;
+    fs.writeFileSync(jsonFile, JSON.stringify(snapshot, null, 2) + "\n", "utf-8");
+
     // 更新台账
     let entry = manifest.dbs.find((d) => d.id === domain);
     if (!entry) {
-      entry = { id: domain, file: `db/${domain}.db`, sources: [], schemaVersion: 1, createdAt: now };
+      entry = {
+        id: domain,
+        dir: domain,
+        db: `${domain}/${domain}.db`,
+        snapshot: `${domain}/${domain}.json`,
+        sources: [],
+        schemaVersion: 1,
+        createdAt: now,
+      };
       manifest.dbs.push(entry);
     }
     entry.updatedAt = now;
     entry.schemaVersion = 1;
     entry.sources = [...new Set([...entry.sources, ...entries.map(([k]) => k)])];
-    console.log(`ok:   sqlite -> ${dbFile} (domain: ${domain})`);
+    console.log(`ok:   store -> ${domainDir}/ (db + json + archive) [domain: ${domain}]`);
   }
 
   manifest.updatedAt = now;
@@ -219,12 +241,16 @@ async function main() {
     tryCollect("csdn", collectCsdnLatest),
   ]);
 
-  const data = { updatedAt: now, sources };
-  fs.mkdirSync(path.dirname(OUT), { recursive: true });
-  fs.writeFileSync(OUT, JSON.stringify(data, null, 2) + "\n", "utf-8");
-  console.log(`written -> ${OUT}`);
+  // 站点发布模式（未设 HOS_DB_DIR）写合并快照 OUT；
+  // 数据中枢模式（设 HOS_DB_DIR）由 writeStore 写分域 .db/.json 快照。
+  if (!process.env.HOS_DB_DIR) {
+    const data = { updatedAt: now, sources };
+    fs.mkdirSync(path.dirname(OUT), { recursive: true });
+    fs.writeFileSync(OUT, JSON.stringify(data, null, 2) + "\n", "utf-8");
+    console.log(`written -> ${OUT}`);
+  }
 
-  await writeSqlite(sources, now);
+  await writeStore(sources, now);
 }
 
 main().catch((e) => {
